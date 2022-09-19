@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.helperclasses;
-
+/*
 import android.app.Application;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -59,7 +59,7 @@ public class LQR extends Application
      * @param r radius of circle
      * @return boolean indicating if the robot is within a circle of radius r
      * */
-    public boolean robotInCircle(double x, double y, double r)
+   /* public boolean robotInCircle(double x, double y, double r)
     {
 
         return Math.pow(y-robot.y,2)+Math.pow(x-robot.x,2)<Math.pow(r,2);
@@ -80,7 +80,7 @@ public class LQR extends Application
      * @param yGoal the y position (in inches) for the robot to move to on the field
      * @param thetaGoal the angular position (in degrees) for the robot to move to on the field
      * */
-    public void runLqrDrive(double[][] path, double xGoal, double yGoal, double thetaGoal)
+   /* public void runLqrDrive(double[][] path, double xGoal, double yGoal, double thetaGoal)
     {
 
 
@@ -136,7 +136,7 @@ public class LQR extends Application
      * @param file name of file where LQR data is located
      * @return matrix of LQR gain matrices
      * */
-    public double[][] loadPath(String file) throws IOException, ClassNotFoundException
+    /*public double[][] loadPath(String file) throws IOException, ClassNotFoundException
     {
 
         Scanner s = new Scanner(new File(Environment.getExternalStorageDirectory() + file));
@@ -169,4 +169,7 @@ public class LQR extends Application
         return path;
 
     }
+}
+     */
+public class LQR {
 }

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.helperclasses;
 
-import org.firstinspires.ftc.teamcode.Hardware;
+/*import org.firstinspires.ftc.teamcode.Hardware;
 
 public class PathFollowers
 {
@@ -148,4 +148,8 @@ public class PathFollowers
     }
 
 
+}
+ */
+
+public class PathFollowers {
 }
