@@ -40,6 +40,13 @@ public class Hardware
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
+    //helper class variables
+    public static LinearOpMode currentOpMode;
+
+    public double y;
+    public double x;
+    public double theta;
+
     //constructor method
     public Hardware(HardwareMap hardwareMap)
     {
@@ -48,6 +55,12 @@ public class Hardware
         frontRight = hardwareMap.get(DcMotorEx.class, "Front Right");
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
+
+        //helper class variables
+        y = 0;
+        x = 0;
+        theta = 0;
+
     }
 
     //robot-oriented drive method
