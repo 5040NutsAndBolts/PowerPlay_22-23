@@ -102,5 +102,4 @@ public class TSEFinder extends OpenCvPipeline
             // Otherwise returns the calculated area of the contour
             return -Imgproc.contourArea(input);
         }
-
 }
