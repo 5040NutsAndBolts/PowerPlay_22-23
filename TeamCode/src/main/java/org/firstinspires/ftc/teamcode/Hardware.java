@@ -34,12 +34,51 @@ import static java.lang.Math.abs;
 
 public class Hardware
 {
-    public DcMotorEx wheelA;
-    public DcMotorEx wheelB;
+    //drive motor declaration
+    public DcMotorEx frontLeft;
+    public DcMotorEx frontRight;
+    public DcMotorEx backLeft;
+    public DcMotorEx backRight;
 
+    //helper class variables
+    public static LinearOpMode currentOpMode;
+
+    public double y;
+    public double x;
+    public double theta;
+
+    //constructor method
     public Hardware(HardwareMap hardwareMap)
     {
-        wheelA = hardwareMap.get(DcMotorEx.class, "wheel A");
-        wheelB = hardwareMap.get(DcMotorEx.class, "wheel B");
+        //drive motor initialization
+        frontLeft = hardwareMap.get(DcMotorEx.class, "Front Left");
+        frontRight = hardwareMap.get(DcMotorEx.class, "Front Right");
+        backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
+        backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
+
+        //helper class variables
+        y = 0;
+        x = 0;
+        theta = 0;
+
+    }
+
+    //robot-oriented drive method
+    public void drive(double forward, double sideways, double rotation)
+    {
+        //adds all the inputs together to get the number to scale it by
+        double scale = abs(rotation) + abs(forward) + abs(sideways);
+
+        //scales the inputs when needed
+        if (scale > 1) {
+            forward /= scale;
+            rotation /= scale;
+            sideways /= scale;
+        }
+        //setting the motor powers to move
+        frontLeft.setPower(forward - rotation - sideways);
+        backLeft.setPower(forward - rotation + sideways);
+        frontRight.setPower(-(forward + rotation + sideways));
+        backRight.setPower(-(forward + rotation - sideways));
     }
 }

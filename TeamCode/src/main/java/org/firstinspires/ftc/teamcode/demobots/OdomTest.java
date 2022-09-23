@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.demobots;
-
+/*
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -28,4 +28,8 @@ public class OdomTest extends LinearOpMode
             telemetry.update();
         }
     }
+}
+ */
+
+public class OdomTest {
 }

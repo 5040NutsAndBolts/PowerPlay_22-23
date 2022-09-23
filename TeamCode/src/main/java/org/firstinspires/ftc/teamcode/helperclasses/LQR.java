@@ -164,8 +164,6 @@ public class LQR extends Application
 
         }
 
-
-
         return path;
 
     }
