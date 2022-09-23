@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.helperclasses;
-/*
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -27,7 +27,7 @@ public class TSEFinder extends OpenCvPipeline
         /**
          * Sets up all the variables to keep code clean
          */
-      /*  public TSEFinder() {
+        public TSEFinder() {
             rawImage = new Mat();
             workingMat = new Mat();
             selectionMask = new Mat();
@@ -103,7 +103,4 @@ public class TSEFinder extends OpenCvPipeline
             return -Imgproc.contourArea(input);
         }
 
-}
-       */
-public class TSEFinder {
 }
