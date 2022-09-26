@@ -50,7 +50,7 @@ public class OrangeFinder extends OpenCvPipeline
         double lowestScore = Double.MAX_VALUE;
 
         Imgproc.cvtColor(rawImage,workingMat,Imgproc.COLOR_RGB2HSV);
-        Core.inRange(workingMat,new Scalar(15,60,60),new Scalar(30,255,255),workingMat);
+        Core.inRange(workingMat,new Scalar(10,60,60),new Scalar(25,255,255),workingMat);
 
         // Creates a list for all contoured objects the camera will find
         List<MatOfPoint> contoursList = new ArrayList<>();
@@ -82,7 +82,7 @@ public class OrangeFinder extends OpenCvPipeline
 
         // Draw the "best fit" rectangle on the selections mask and skystone only mask
         //     Drawn in red
-        Imgproc.rectangle(selectionMask, bestRect.tl(), bestRect.br(), new Scalar(0,255,0),10);
+        Imgproc.rectangle(selectionMask, bestRect.tl(), bestRect.br(), new Scalar(30,255,0),10);
 
         // Sets the position of the selected rectangle (relative to the screen resolution)
         screenPosition = new Point(bestRect.x, bestRect.y);
