@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.helperclasses;
+package org.firstinspires.ftc.teamcode.signalfinding;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -12,9 +12,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GreenFinder extends OpenCvPipeline
+public class PurpleFinder extends OpenCvPipeline
 {
-    private static double area = 0;
+    public static double purpleScore;
 
     // Coordinate position of the top left corner of the selected rectangle
     public static Point screenPosition = new Point(0,0);
@@ -28,13 +28,12 @@ public class GreenFinder extends OpenCvPipeline
     /**
      * Sets up all the variables to keep code clean
      */
-    public GreenFinder() {
+    public PurpleFinder() {
         rawImage = new Mat();
         workingMat = new Mat();
         selectionMask = new Mat();
         hierarchy = new Mat();
     }
-
 
     @Override
     public Mat processFrame(Mat input) {
@@ -43,7 +42,6 @@ public class GreenFinder extends OpenCvPipeline
         input.copyTo(workingMat);
         input.copyTo(selectionMask);
 
-
         // Sets the best fitting rectangle to the one currently selected
         Rect bestRect = new Rect();
 
@@ -51,17 +49,15 @@ public class GreenFinder extends OpenCvPipeline
         // MAX_VALUE to find the lesser difference
         double lowestScore = Double.MAX_VALUE;
 
-
         Imgproc.cvtColor(rawImage,workingMat,Imgproc.COLOR_RGB2HSV);
-        Core.inRange(workingMat,new Scalar(40,60,60),new Scalar(75,255,255),workingMat);
-
+        Core.inRange(workingMat,new Scalar(135,60,60),new Scalar(150,255,255),workingMat);
 
         // Creates a list for all contoured objects the camera will find
         List<MatOfPoint> contoursList = new ArrayList<>();
 
         Imgproc.findContours(workingMat, contoursList, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        Imgproc.drawContours(selectionMask, contoursList,-1, new Scalar(40,40,40),2);
+        Imgproc.drawContours(selectionMask, contoursList,-1, new Scalar(150,40,40),2);
 
         // Scores all the contours and selects the best of them
         for(MatOfPoint contour : contoursList){
@@ -73,7 +69,7 @@ public class GreenFinder extends OpenCvPipeline
 
             // Draw the current found rectangle on the selections mask
             //     Drawn in blue
-            Imgproc.rectangle(selectionMask, rect.tl(), rect.br(), new Scalar(0,0,255),2);
+            Imgproc.rectangle(selectionMask, rect.tl(), rect.br(), new Scalar(135,0,255),2);
 
             // If the result is better then the previously tracked one,
             // and the top left coordinates are within the cropped area
@@ -90,26 +86,17 @@ public class GreenFinder extends OpenCvPipeline
 
         // Sets the position of the selected rectangle (relative to the screen resolution)
         screenPosition = new Point(bestRect.x, bestRect.y);
+        purpleScore = bestRect.height * bestRect.width;
 
         return selectionMask;
-
     }
-
 
     private double calculateScore(Mat input)
     {
-        area = -Imgproc.contourArea(input);
-
         // Validates input, returning the maximum value if invalid
         if(!(input instanceof MatOfPoint))
             return Double.MAX_VALUE;
         // Otherwise returns the calculated area of the contour
         return -Imgproc.contourArea(input);
     }
-
-    public static double getArea()
-    {
-        return area;
-    }
-
 }
