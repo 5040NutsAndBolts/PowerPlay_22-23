@@ -50,7 +50,7 @@ public class OrangeFinder extends OpenCvPipeline
         double lowestScore = Double.MAX_VALUE;
 
         Imgproc.cvtColor(rawImage,workingMat,Imgproc.COLOR_RGB2HSV);
-        Core.inRange(workingMat,new Scalar(10,60,60),new Scalar(25,255,255),workingMat);
+        Core.inRange(workingMat,new Scalar(10,60,60),new Scalar(20,255,255),workingMat);
 
         // Creates a list for all contoured objects the camera will find
         List<MatOfPoint> contoursList = new ArrayList<>();

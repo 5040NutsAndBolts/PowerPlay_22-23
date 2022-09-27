@@ -50,7 +50,7 @@ public class PurpleFinder extends OpenCvPipeline
         double lowestScore = Double.MAX_VALUE;
 
         Imgproc.cvtColor(rawImage,workingMat,Imgproc.COLOR_RGB2HSV);
-        Core.inRange(workingMat,new Scalar(130,60,60),new Scalar(165,255,255),workingMat);
+        Core.inRange(workingMat,new Scalar(120,60,60),new Scalar(165,255,255),workingMat);
 
         // Creates a list for all contoured objects the camera will find
         List<MatOfPoint> contoursList = new ArrayList<>();
