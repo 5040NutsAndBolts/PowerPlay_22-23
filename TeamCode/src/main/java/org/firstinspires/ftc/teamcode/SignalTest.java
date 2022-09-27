@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @TeleOp(name = "Signal Test", group = "Teleop")
-public class signalTest extends LinearOpMode
+public class SignalTest extends LinearOpMode
 {
     private static int autoNumber = 1;
 
