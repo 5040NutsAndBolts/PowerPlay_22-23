@@ -62,6 +62,9 @@ public class SignalAuto extends LinearOpMode
                 autoNumber = 3;
             else
                 autoNumber = 1;
+
+            telemetry.addData("auto", autoNumber);
+            telemetry.update();
         }
 
         waitForStart();
@@ -74,11 +77,23 @@ public class SignalAuto extends LinearOpMode
                 ElapsedTime timer = new ElapsedTime();
                 timer.startTime();
 
-                while(timer.seconds() < 1)
-                    robot.drive(1,-1,0);
+                while(timer.seconds() < .25 && opModeIsActive())
+                {
+                    robot.drive(0,-.5,0);
+                    telemetry.addLine("moving sideways");
+                    telemetry.update();
+                }
 
-                while (timer.seconds() < 3)
-                    robot.drive(1,0,0);
+                timer.reset();
+                timer.startTime();
+
+                while (timer.seconds() < 1 && opModeIsActive())
+                {
+                    robot.drive(-.5,0,0);
+                    telemetry.addLine("moving forward");
+                    telemetry.update();
+                }
+
             }
 
             else if(autoNumber == 2)
@@ -86,8 +101,8 @@ public class SignalAuto extends LinearOpMode
                 ElapsedTime timer = new ElapsedTime();
                 timer.startTime();
 
-                while (timer.seconds() < 3)
-                    robot.drive(1,0,0);
+                while (timer.seconds() < 1.5 && opModeIsActive())
+                    robot.drive(-.5,0,0);
             }
 
             else
@@ -95,14 +110,16 @@ public class SignalAuto extends LinearOpMode
                 ElapsedTime timer = new ElapsedTime();
                 timer.startTime();
 
-                while(timer.seconds() < 1)
-                    robot.drive(1,1,0);
+                while(timer.seconds() < 1 && opModeIsActive())
+                    robot.drive(-.5,.5,0);
 
-                while (timer.seconds() < 3)
-                    robot.drive(1,0,0);
+                while (timer.seconds() < 1.5 && opModeIsActive())
+                    robot.drive(-.5,0,0);
             }
 
             robot.drive(0,0,0);
+            telemetry.addLine("stopped");
+            telemetry.update();
         }
     }
 }
