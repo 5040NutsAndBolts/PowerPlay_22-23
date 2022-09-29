@@ -23,43 +23,6 @@ public class signalTest extends LinearOpMode
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
 
-        webcam.setPipeline(new GreenFinder());
-        webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-
-
-        webcam.setPipeline(new OrangeFinder());
-        webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode)
-            {
-
-            }
-        });
-
-
-        webcam.setPipeline(new PurpleFinder());
         webcam.setMillisecondsPermissionTimeout(2500); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -83,6 +46,10 @@ public class signalTest extends LinearOpMode
             double orangeScore = OrangeFinder.orangeScore;
             double greenScore = GreenFinder.greenScore;
             double purpleScore = PurpleFinder.purpleScore;
+
+            webcam.setPipeline(new OrangeFinder());
+            webcam.setPipeline(new GreenFinder());
+            webcam.setPipeline(new PurpleFinder());
 
             if(greenScore >= orangeScore && greenScore >= purpleScore)
                 autoNumber = 2;

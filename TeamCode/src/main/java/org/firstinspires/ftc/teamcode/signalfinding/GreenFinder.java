@@ -82,7 +82,7 @@ public class GreenFinder extends OpenCvPipeline
 
         // Draw the "best fit" rectangle on the selections mask and skystone only mask
         //     Drawn in red
-        Imgproc.rectangle(selectionMask, bestRect.tl(), bestRect.br(), new Scalar(0,255,0),10);
+        Imgproc.rectangle(selectionMask, bestRect.tl(), bestRect.br(), new Scalar(40,255,0),10);
 
         // Sets the position of the selected rectangle (relative to the screen resolution)
         screenPosition = new Point(bestRect.x, bestRect.y);
