@@ -56,6 +56,12 @@ public class Hardware
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         //helper class variables
         y = 0;
         x = 0;
