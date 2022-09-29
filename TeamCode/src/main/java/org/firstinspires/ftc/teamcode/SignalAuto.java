@@ -69,37 +69,40 @@ public class SignalAuto extends LinearOpMode
 
         waitForStart();
 
+        ElapsedTime timer = new ElapsedTime();
+        timer.startTime();
+
         //runs once program is started
         while(opModeIsActive())
         {
             if(autoNumber == 1)
             {
-                ElapsedTime timer = new ElapsedTime();
-                timer.startTime();
+                telemetry.addLine("auto 1");
+                telemetry.update();
 
-                while(timer.seconds() < .25 && opModeIsActive())
+                while(timer.seconds() < 1.35 && opModeIsActive())
                 {
                     robot.drive(0,-.5,0);
                     telemetry.addLine("moving sideways");
+                    telemetry.addData("time", timer.seconds());
                     telemetry.update();
                 }
 
-                timer.reset();
-                timer.startTime();
-
-                while (timer.seconds() < 1 && opModeIsActive())
+                while (timer.seconds() < 2.5 && opModeIsActive())
                 {
                     robot.drive(-.5,0,0);
                     telemetry.addLine("moving forward");
+                    telemetry.addData("time", timer.seconds());
                     telemetry.update();
                 }
 
+                robot.drive(0,0,0);
             }
 
             else if(autoNumber == 2)
             {
-                ElapsedTime timer = new ElapsedTime();
-                timer.startTime();
+                telemetry.addLine("auto 2");
+                telemetry.update();
 
                 while (timer.seconds() < 1.5 && opModeIsActive())
                     robot.drive(-.5,0,0);
@@ -107,8 +110,8 @@ public class SignalAuto extends LinearOpMode
 
             else
             {
-                ElapsedTime timer = new ElapsedTime();
-                timer.startTime();
+                telemetry.addLine("auto 3");
+                telemetry.update();
 
                 while(timer.seconds() < 1 && opModeIsActive())
                     robot.drive(-.5,.5,0);
