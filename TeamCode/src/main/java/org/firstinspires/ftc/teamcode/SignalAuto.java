@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.signalfinding.GreenFinder;
+//camera import
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.signalfinding.GreenFinder;
 import org.firstinspires.ftc.teamcode.signalfinding.OrangeFinder;
 import org.firstinspires.ftc.teamcode.signalfinding.PurpleFinder;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -12,14 +14,15 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@TeleOp(name = "Signal Test", group = "Teleop")
-public class signalTest extends LinearOpMode
+@Autonomous (name = "Signal Auto", group = "Autonomous")
+public class SignalAuto extends LinearOpMode
 {
-    private static int autoNumber = 1;
+    int autoNumber = 1;
 
     @Override
     public void runOpMode() throws InterruptedException
     {
+        //camera setup
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
 
@@ -39,9 +42,11 @@ public class signalTest extends LinearOpMode
             }
         });
 
-        waitForStart();
+        //initializes robot
+        Hardware robot = new Hardware(hardwareMap);
 
-        while(opModeIsActive())
+        //runs camera and associated programs
+        while(!isStopRequested() && !isStarted())
         {
             double orangeScore = OrangeFinder.orangeScore;
             double greenScore = GreenFinder.greenScore;
@@ -58,16 +63,48 @@ public class signalTest extends LinearOpMode
             else
                 autoNumber = 1;
 
-            telemetry.addData("orange position", OrangeFinder.screenPosition);
-            telemetry.addData("green position", GreenFinder.screenPosition);
-            telemetry.addData("purple position", PurpleFinder.screenPosition);
-            telemetry.addLine();
-            telemetry.addData("orange score", orangeScore);
-            telemetry.addData("green score", greenScore);
-            telemetry.addData("purple score", purpleScore);
-            telemetry.addLine();
-            telemetry.addData("auto number", autoNumber);
+            telemetry.addData("auto", autoNumber);
             telemetry.update();
+        }
+
+        waitForStart();
+
+        ElapsedTime timer = new ElapsedTime();
+        timer.startTime();
+
+        //runs once program is started
+        while(opModeIsActive())
+        {
+            if(autoNumber == 1)
+            {
+                telemetry.addLine("auto 1");
+                telemetry.update();
+
+                while(timer.seconds() < 1.35 && opModeIsActive())
+                    robot.drive(0,-.5,0);
+
+                while (timer.seconds() < 2.5 && opModeIsActive())
+                    robot.drive(-.5,0,0);
+
+                robot.drive(0,0,0);
+            }
+
+            else if(autoNumber == 2)
+            {
+                while (timer.seconds() < 1.5 && opModeIsActive())
+                    robot.drive(-.5,0,0);
+            }
+
+            else
+            {
+                while(timer.seconds() < 1.35 && opModeIsActive())
+                    robot.drive(0,.5,0);
+
+                while (timer.seconds() < 2.5 && opModeIsActive())
+                    robot.drive(-.5,0,0);
+            }
+
+            robot.drive(0,0,0);
         }
     }
 }
