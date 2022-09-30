@@ -14,6 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name = "TeleopCode", group = "Teleop")
 public class Teleop extends LinearOpMode
 {
+    public boolean slowMode = false;
+    public double driveSpeed = 1;
+
+    public boolean bPressed = false;
+
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -25,7 +30,24 @@ public class Teleop extends LinearOpMode
         while(opModeIsActive())
         {
             //drive method call
-            robot.drive(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            robot.drive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
+
+            //slowmode setup
+            if(gamepad1.b && !bPressed)
+            {
+                slowMode = !slowMode;
+                bPressed = true;
+            }
+            else if (!gamepad1.b)
+                bPressed = false;
+
+            if(slowMode)
+                driveSpeed = .5;
+            else
+                driveSpeed = 1;
+
+            telemetry.addData("Slow mode", slowMode);
+            telemetry.update();
         }
     }
 }
