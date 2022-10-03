@@ -2,18 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 //import org.firstinspires.ftc.teamcode.helperclasses.HelperMethods;
 
 @TeleOp(name = "TeleopCode", group = "Teleop")
 public class Teleop extends LinearOpMode
 {
+    public boolean rDrive = true;
     public boolean slowMode = false;
     public double driveSpeed = 1;
 
@@ -25,12 +19,26 @@ public class Teleop extends LinearOpMode
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
 
+        telemetry.addLine("init done");
+        telemetry.update();
+
         waitForStart();
 
         while(opModeIsActive())
         {
-            //drive method call
-            robot.drive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
+            //robot oriented drive method call
+            if(rDrive)
+                robot.robotODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
+
+            //field oriented drive method call
+            if(!rDrive)
+                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed, gamepad1.right_stick_button);
+
+            //drive mode toggles
+            if(gamepad1.left_bumper)
+                rDrive = true;
+            if(gamepad1.right_bumper)
+                rDrive = false;
 
             //slowmode setup
             if(gamepad1.b && !bPressed)
@@ -47,6 +55,7 @@ public class Teleop extends LinearOpMode
                 driveSpeed = 1;
 
             telemetry.addData("Slow mode", slowMode);
+            telemetry.addData("Robot Drive", rDrive);
             telemetry.update();
         }
     }

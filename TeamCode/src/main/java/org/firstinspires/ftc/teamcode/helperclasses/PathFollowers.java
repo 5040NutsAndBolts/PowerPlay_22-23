@@ -107,9 +107,9 @@ public class PathFollowers
         //
         // Hardware.currentOpMode.telemetry.update();
 
-        robot.drive(realForward,realSideways,realRotation);
+        robot.robotODrive(realForward,realSideways,realRotation);
 
-        robot.drive(realForward,realSideways,realRotation);
+        robot.robotODrive(realForward,realSideways,realRotation);
 
     }
 
@@ -119,7 +119,7 @@ public class PathFollowers
         double angleToPoint=robot.theta-Math.atan2(point.y-robot.y,point.x-robot.x)-angleToFace;
         double sidewaysSpeed=0.808736084*proportionalRotateSpeed*angleToPoint;
         double rotationSpeed=-0.588171697675*proportionalRotateSpeed*angleToPoint;
-        robot.drive(forwardSpeed,sidewaysSpeed,rotationSpeed);
+        robot.robotODrive(forwardSpeed,sidewaysSpeed,rotationSpeed);
         Hardware.currentOpMode.telemetry.addData("forward",forwardSpeed);
         Hardware.currentOpMode.telemetry.addData("sideways",sidewaysSpeed);
         Hardware.currentOpMode.telemetry.addData("rotate",rotationSpeed);
@@ -137,7 +137,7 @@ public class PathFollowers
         while(angleToPoint>Math.PI)
             angleToPoint=Math.PI*2-angleToPoint;
         pid.update(-angleToPoint);
-        robot.drive(forwardSpeed,0,pid.getPID());
+        robot.robotODrive(forwardSpeed,0,pid.getPID());
         Hardware.currentOpMode.telemetry.addData("atan",Math.atan2(point.x-robot.x,point.y-robot.y));
         Hardware.currentOpMode.telemetry.addData("theta",robot.theta);
         Hardware.currentOpMode.telemetry.addData("angle",angleToPoint);

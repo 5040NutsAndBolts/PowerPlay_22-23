@@ -1,28 +1,12 @@
 package org.firstinspires.ftc.teamcode.helperclasses;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.os.Environment;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.nio.file.Files;
 import java.util.Scanner;
 
 public class LQR extends Application
@@ -128,7 +112,7 @@ public class LQR extends Application
         double sidewaysRobotOriented=-forward*Math.sin(robot.theta)+sideways*Math.cos(robot.theta);
 
         //run the motors
-        robot.drive(-forwardRobotOriented,sidewaysRobotOriented,-rotations);
+        robot.robotODrive(-forwardRobotOriented,sidewaysRobotOriented,-rotations);
 
     }
 

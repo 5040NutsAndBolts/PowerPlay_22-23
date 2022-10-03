@@ -81,30 +81,30 @@ public class SignalAuto extends LinearOpMode
                 telemetry.update();
 
                 while(timer.seconds() < 1.35 && opModeIsActive())
-                    robot.drive(0,-.5,0);
+                    robot.robotODrive(0,-.5,0);
 
                 while (timer.seconds() < 2.5 && opModeIsActive())
-                    robot.drive(-.5,0,0);
+                    robot.robotODrive(-.5,0,0);
 
-                robot.drive(0,0,0);
+                robot.robotODrive(0,0,0);
             }
 
             else if(autoNumber == 2)
             {
                 while (timer.seconds() < 1.5 && opModeIsActive())
-                    robot.drive(-.5,0,0);
+                    robot.robotODrive(-.5,0,0);
             }
 
             else
             {
                 while(timer.seconds() < 1.35 && opModeIsActive())
-                    robot.drive(0,.5,0);
+                    robot.robotODrive(0,.5,0);
 
                 while (timer.seconds() < 2.5 && opModeIsActive())
-                    robot.drive(-.5,0,0);
+                    robot.robotODrive(-.5,0,0);
             }
 
-            robot.drive(0,0,0);
+            robot.robotODrive(0,0,0);
         }
     }
 }
