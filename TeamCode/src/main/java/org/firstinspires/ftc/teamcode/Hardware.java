@@ -5,6 +5,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -49,6 +50,9 @@ public class Hardware
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
@@ -76,8 +80,8 @@ public class Hardware
         //setting the motor powers to move
         frontLeft.setPower(forward - rotation - sideways);
         backLeft.setPower(forward - rotation + sideways);
-        frontRight.setPower(-(forward + rotation + sideways));
-        backRight.setPower(-(forward + rotation - sideways));
+        frontRight.setPower(forward + rotation + sideways);
+        backRight.setPower(forward + rotation - sideways);
     }
 
     //field oriented drive

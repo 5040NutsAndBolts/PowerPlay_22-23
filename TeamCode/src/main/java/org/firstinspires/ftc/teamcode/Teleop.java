@@ -38,7 +38,7 @@ public class Teleop extends LinearOpMode
 
             //field oriented drive method call
             if(!rDrive)
-                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed, gamepad1.right_stick_button);
+                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed, -gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed, gamepad1.right_stick_button);
 
             //drive mode toggles
             if(gamepad1.left_bumper)
