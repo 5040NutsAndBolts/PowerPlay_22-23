@@ -20,6 +20,7 @@ public class SignalTest extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
+        //camera settup
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvWebcam webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
 
@@ -41,6 +42,7 @@ public class SignalTest extends LinearOpMode
 
         waitForStart();
 
+        //teleop loop
         while(opModeIsActive())
         {
             double orangeScore = OrangeFinder.orangeScore;

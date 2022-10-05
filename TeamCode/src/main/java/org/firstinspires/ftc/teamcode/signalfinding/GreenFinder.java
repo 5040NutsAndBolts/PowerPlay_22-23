@@ -12,6 +12,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
+//most of this class is just setup that doesn't need to be changed
+//the core.inRange line is what controls the important stuff
 public class GreenFinder extends OpenCvPipeline
 {
     public static double greenScore;
@@ -49,7 +51,11 @@ public class GreenFinder extends OpenCvPipeline
         // MAX_VALUE to find the lesser difference
         double lowestScore = Double.MAX_VALUE;
 
+        //converts the image from rgb to hsv
         Imgproc.cvtColor(rawImage,workingMat,Imgproc.COLOR_RGB2HSV);
+
+        //controls the color range the camera is looking for in the hsv color space
+        //the hue value is scaled by .5, the saturation and value are scaled by 2.55
         Core.inRange(workingMat,new Scalar(40,60,60),new Scalar(75,255,255),workingMat);
 
         // Creates a list for all contoured objects the camera will find

@@ -12,7 +12,7 @@ public class MechanismTest extends OpMode
     public DcMotorEx wheelB;
 
     @Override
-    public void init()
+    public void init() //initialization method
     {
         wheelA = hardwareMap.get(DcMotorEx.class, "wheel A");
         wheelB = hardwareMap.get(DcMotorEx.class, "wheel B");
@@ -21,7 +21,7 @@ public class MechanismTest extends OpMode
     }
 
     @Override
-    public void loop()
+    public void loop() //teleop loop
     {
         wheelA.setPower(-gamepad1.right_trigger);
         wheelB.setPower(-gamepad1.right_trigger);

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-@TeleOp(name = "TeleopCode", group = "Teleop")
+@TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends LinearOpMode
 {
     public boolean rDrive = true;
@@ -30,6 +30,7 @@ public class Teleop extends LinearOpMode
 
         waitForStart();
 
+        //teleop loop
         while(opModeIsActive())
         {
             //robot oriented drive method call
@@ -62,8 +63,6 @@ public class Teleop extends LinearOpMode
 
             telemetry.addData("Slow mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
-            telemetry.addLine();
-            //telemetry.addData("imu heading degrees", robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             telemetry.update();
         }
     }

@@ -75,26 +75,24 @@ public class SignalAuto extends LinearOpMode
         //runs once program is started
         while(opModeIsActive())
         {
+            //orange signal image, left park zone
             if(autoNumber == 1)
             {
-                telemetry.addLine("auto 1");
-                telemetry.update();
-
                 while(timer.seconds() < 1.35 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
 
                 while (timer.seconds() < 2.5 && opModeIsActive())
                     robot.robotODrive(-.5,0,0);
-
-                robot.robotODrive(0,0,0);
             }
 
+            //green signal image, middle park zone
             else if(autoNumber == 2)
             {
                 while (timer.seconds() < 1.5 && opModeIsActive())
                     robot.robotODrive(-.5,0,0);
             }
 
+            //purple signal image, right park zone
             else
             {
                 while(timer.seconds() < 1.35 && opModeIsActive())
