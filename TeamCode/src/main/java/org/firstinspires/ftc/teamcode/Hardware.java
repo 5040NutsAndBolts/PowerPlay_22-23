@@ -25,6 +25,9 @@ public class Hardware
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
+    /*public DcMotorEx wheelIntake;
+    public DcMotorEx transferSlide;*/
+
     public BNO055IMU imu;
     public double adjust = 0;
 
@@ -45,6 +48,9 @@ public class Hardware
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
+        /*wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
+        transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");*/
+
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -52,6 +58,9 @@ public class Hardware
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        /*wheelIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
 
         //gyro setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -106,4 +115,50 @@ public class Hardware
         backLeft.setPower(v7);
         backRight.setPower(v8);
     }
+
+    /*public void transfer()
+    {
+
+        if(!transferOverride)
+        {
+
+            if ((transferLevel == 0)) {
+                if (transferSlide.getCurrentPosition() < 35) {
+                    transferSlide.setPower(0);
+                    if(transferSlide.getZeroPowerBehavior()!=DcMotor.ZeroPowerBehavior.FLOAT)
+                        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                } else {
+                    transferSlide.setTargetPosition(0);
+                    transferSlide.setPower(1);
+                }
+
+            } else if (transferLevel == 1)
+            {
+                if (transferSlide.getCurrentPosition() < 505||transferSlide.getCurrentPosition() > 509)
+                {
+                    transferSlide.setPower(1);
+                    transferSlide.setTargetPosition(507);
+                }
+                else
+                {
+                    transferSlide.setPower(0);
+                    if(transferSlide.getZeroPowerBehavior()!=DcMotor.ZeroPowerBehavior.BRAKE)
+                        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
+
+            } else
+            {
+
+                if (transferSlide.getCurrentPosition() > 1345)
+                {
+                    transferSlide.setPower(0);
+                    if(transferSlide.getZeroPowerBehavior()!=DcMotor.ZeroPowerBehavior.BRAKE)
+                        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                } else
+                {
+                    transferSlide.setTargetPosition(1400);
+                    transferSlide.setPower(1);
+                }
+            }*/
+
 }

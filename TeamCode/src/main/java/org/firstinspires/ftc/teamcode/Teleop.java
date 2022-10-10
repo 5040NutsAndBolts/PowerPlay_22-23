@@ -20,8 +20,7 @@ public class Teleop extends LinearOpMode
     public boolean bPressed = false;
 
     @Override
-    public void runOpMode() throws InterruptedException
-    {
+    public void runOpMode() throws InterruptedException {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
 
@@ -31,35 +30,43 @@ public class Teleop extends LinearOpMode
         waitForStart();
 
         //teleop loop
-        while(opModeIsActive())
-        {
+        while (opModeIsActive()) {
             //robot oriented drive method call
-            if(rDrive)
+            if (rDrive)
                 robot.robotODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
 
             //field oriented drive method call
-            if(!rDrive)
+            if (!rDrive)
                 robot.fieldODrive(gamepad1.left_stick_y * driveSpeed, -gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed, gamepad1.right_stick_button);
 
             //drive mode toggles
-            if(gamepad1.left_bumper)
+            if (gamepad1.left_bumper)
                 rDrive = true;
-            if(gamepad1.right_bumper)
+            if (gamepad1.right_bumper)
                 rDrive = false;
 
             //slowmode setup
-            if(gamepad1.b && !bPressed)
-            {
+            if (gamepad1.b && !bPressed) {
                 slowMode = !slowMode;
                 bPressed = true;
-            }
-            else if (!gamepad1.b)
+            } else if (!gamepad1.b)
                 bPressed = false;
 
-            if(slowMode)
+            if (slowMode)
                 driveSpeed = .5;
             else
                 driveSpeed = 1;
+
+            /*wheelIntake.setPower(gamepad1.right_trigger);
+            wheelIntake.setPower(-gamepad1.left_trigger);
+
+            if (!transferOverride)
+            {
+                transferSlide.setPower(-gamepad1.right_trigger);
+                transferSlide.setPower(gamepad1.left_trigger);
+            }
+
+            transfer();*/
 
             telemetry.addData("Slow mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
