@@ -50,7 +50,8 @@ public class Teleop extends LinearOpMode
                 rDrive = false;
 
             //slowmode setup
-            if (gamepad1.b && !b1Pressed) {
+            if (gamepad1.b && !b1Pressed)
+            {
                 slowMode = !slowMode;
                 b1Pressed = true;
             } else if (!gamepad1.b)
@@ -61,8 +62,8 @@ public class Teleop extends LinearOpMode
             else
                 driveSpeed = 1;
 
-            //wheel intake portion
-            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
+            //wheel intake portion //uncomment when wheel intake added
+            /*if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
             {
                 robot.wheelIntake.setPower(gamepad2.right_trigger);
                 robot.wheelIntake.setPower(-gamepad2.left_trigger);
@@ -71,7 +72,7 @@ public class Teleop extends LinearOpMode
             {
                 robot.wheelIntake.setPower(gamepad1.right_trigger);
                 robot.wheelIntake.setPower(-gamepad1.left_trigger);
-            }
+            }*/
 
             //sets transfer override
             /*if(gamepad2.y) //uncomment when ready to set encoder positions

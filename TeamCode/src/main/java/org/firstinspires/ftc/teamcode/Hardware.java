@@ -24,7 +24,7 @@ public class Hardware {
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    public DcMotorEx wheelIntake;
+    //public DcMotorEx wheelIntake;
     public DcMotorEx transferSlide;
 
     public BNO055IMU imu;
@@ -47,7 +47,7 @@ public class Hardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
+        //wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
         transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -58,7 +58,7 @@ public class Hardware {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        wheelIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //wheelIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //gyro setup
