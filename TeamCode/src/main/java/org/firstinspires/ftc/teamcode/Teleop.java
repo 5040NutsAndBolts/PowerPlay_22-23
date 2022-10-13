@@ -17,10 +17,13 @@ public class Teleop extends LinearOpMode
     public boolean slowMode = false;
     public double driveSpeed = 1;
 
-    public boolean bPressed = false;
+    public boolean b1Pressed = false;
+    public boolean y2Pressed = false;
+    public boolean bumper2Pressed = false;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() throws InterruptedException
+    {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
 
@@ -30,7 +33,8 @@ public class Teleop extends LinearOpMode
         waitForStart();
 
         //teleop loop
-        while (opModeIsActive()) {
+        while (opModeIsActive())
+        {
             //robot oriented drive method call
             if (rDrive)
                 robot.robotODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
@@ -46,30 +50,62 @@ public class Teleop extends LinearOpMode
                 rDrive = false;
 
             //slowmode setup
-            if (gamepad1.b && !bPressed) {
+            if (gamepad1.b && !b1Pressed) {
                 slowMode = !slowMode;
-                bPressed = true;
+                b1Pressed = true;
             } else if (!gamepad1.b)
-                bPressed = false;
+                b1Pressed = false;
 
             if (slowMode)
                 driveSpeed = .5;
             else
                 driveSpeed = 1;
 
-            /*wheelIntake.setPower(gamepad1.right_trigger);
-            wheelIntake.setPower(-gamepad1.left_trigger);
-
-            if (!transferOverride)
+            //wheel intake portion
+            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
             {
-                transferSlide.setPower(-gamepad1.right_trigger);
-                transferSlide.setPower(gamepad1.left_trigger);
+                robot.wheelIntake.setPower(gamepad2.right_trigger);
+                robot.wheelIntake.setPower(-gamepad2.left_trigger);
+            }
+            else
+            {
+                robot.wheelIntake.setPower(gamepad1.right_trigger);
+                robot.wheelIntake.setPower(-gamepad1.left_trigger);
             }
 
-            transfer();*/
+            //sets transfer override
+            /*if(gamepad2.y) //uncomment when ready to set encoder positions
+                robot.transferOverride = true;
+            else
+                robot.transferOverride = false;*/
 
-            telemetry.addData("Slow mode", slowMode);
+            //transfer level setup
+            if(gamepad2.right_bumper && !bumper2Pressed && robot.transferLevel < 2)
+            {
+                robot.transferLevel++;
+                bumper2Pressed = true;
+            }
+            else if(gamepad2.left_bumper && !bumper2Pressed && robot.transferLevel > 0)
+            {
+                robot.transferLevel--;
+                bumper2Pressed = true;
+            }
+            else if(!gamepad2.left_bumper && !gamepad2.right_bumper)
+                bumper2Pressed = false;
+
+            //transfer mech calls
+            if (robot.transferOverride)
+            {
+                robot.transferSlide.setPower(-gamepad1.right_trigger);
+                robot.transferSlide.setPower(gamepad1.left_trigger);
+            }
+            else
+                robot.transfer();
+
+            telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
+            telemetry.addLine();
+            telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.update();
         }
     }
