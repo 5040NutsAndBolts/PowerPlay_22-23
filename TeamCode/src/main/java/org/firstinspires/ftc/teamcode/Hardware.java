@@ -28,7 +28,7 @@ public class Hardware {
     public DcMotorEx transferSlide;
 
     public BNO055IMU imu;
-    public double adjust = 0;
+
 
     //tracking variables
     public int transferLevel = 0;
@@ -49,6 +49,7 @@ public class Hardware {
 
         //wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
         transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+        transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

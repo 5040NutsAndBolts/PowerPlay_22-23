@@ -102,12 +102,13 @@ public class Teleop extends LinearOpMode
             }
             else
                 robot.transfer();
-
+            telemetry.addData("motorHeight", robot.transferSlide.getCurrentPosition());
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.update();
+
         }
     }
 }
