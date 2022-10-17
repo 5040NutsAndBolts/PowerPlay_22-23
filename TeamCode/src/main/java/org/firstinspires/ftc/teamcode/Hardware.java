@@ -24,11 +24,11 @@ public class Hardware {
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    //public DcMotorEx wheelIntake;
+    public DcMotorEx wheelIntake;
     public DcMotorEx transferSlide;
 
     public BNO055IMU imu;
-
+    public double adjust;
 
     //tracking variables
     public int transferLevel = 0;
@@ -47,7 +47,7 @@ public class Hardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        //wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
+        wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
         transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
         transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -59,7 +59,7 @@ public class Hardware {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //wheelIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        wheelIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //gyro setup
@@ -116,7 +116,7 @@ public class Hardware {
     {
         if ((transferLevel == 0))
         {
-            if (transferSlide.getCurrentPosition() < 35)
+            if (transferSlide.getCurrentPosition() < 700)
             {
                 transferSlide.setPower(0);
                 if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
@@ -124,16 +124,30 @@ public class Hardware {
             }
             else
             {
-                transferSlide.setTargetPosition(0);
+                transferSlide.setTargetPosition(710);
                 transferSlide.setPower(1);
             }
         }
         else if (transferLevel == 1)
         {
-            if (transferSlide.getCurrentPosition() < 505 || transferSlide.getCurrentPosition() > 509)
+            if (transferSlide.getCurrentPosition() < 2440 || transferSlide.getCurrentPosition() > 2460)
             {
                 transferSlide.setPower(1);
-                transferSlide.setTargetPosition(507);
+                transferSlide.setTargetPosition(2450);
+            }
+            else
+            {
+                transferSlide.setPower(0);
+                if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+        }
+        else if (transferLevel == 2)
+        {
+            if (transferSlide.getCurrentPosition() < 3540 || transferSlide.getCurrentPosition() > 3560)
+            {
+                transferSlide.setPower(1);
+                transferSlide.setTargetPosition(3550);
             }
             else
             {
@@ -144,7 +158,7 @@ public class Hardware {
         }
         else
         {
-            if (transferSlide.getCurrentPosition() > 1345)
+            if (transferSlide.getCurrentPosition() > 4740)
             {
                 transferSlide.setPower(0);
                 if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
@@ -152,7 +166,7 @@ public class Hardware {
             }
             else
             {
-                transferSlide.setTargetPosition(1400);
+                transferSlide.setTargetPosition(4750);
                 transferSlide.setPower(1);
             }
         }
