@@ -116,7 +116,7 @@ public class Hardware {
     {
         if ((transferLevel == 0))
         {
-            if (transferSlide.getCurrentPosition() < 700)
+            if (transferSlide.getCurrentPosition() < 250)
             {
                 transferSlide.setPower(0);
                 if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
@@ -124,7 +124,7 @@ public class Hardware {
             }
             else
             {
-                transferSlide.setTargetPosition(710);
+                transferSlide.setTargetPosition(200);
                 transferSlide.setPower(1);
             }
         }

@@ -95,8 +95,16 @@ public class Teleop extends LinearOpMode
                 bumper2Pressed = false;
 
             //transfer mech calls
-            if (robot.transferOverride)
-                robot.transferSlide.setPower(-gamepad2.left_stick_y * .5);
+            if (robot.transferOverride) //add hard limits w/ encoders so you can't break slides here eventually
+            {
+                if(gamepad2.left_stick_y == 0)
+                {
+                    robot.transferSlide.setTargetPosition(robot.transferSlide.getCurrentPosition());
+                    robot.transferSlide.setPower(.5);
+                }
+                else
+                    robot.transferSlide.setPower(-gamepad2.left_stick_y);
+            }
             else
                 robot.transfer();
 
@@ -104,7 +112,7 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Robot Drive", rDrive);
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
-            telemetry.addData("Transfer Override", gamepad2.y);
+            telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
             telemetry.addData("Slide Motor Position", robot.transferSlide.getCurrentPosition());
             telemetry.addData("Intake Motor Power", robot.wheelIntake.getPower());
