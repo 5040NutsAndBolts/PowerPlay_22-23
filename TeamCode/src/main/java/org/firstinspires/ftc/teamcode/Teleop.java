@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -26,6 +27,7 @@ public class Teleop extends LinearOpMode
     {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
+        robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -62,23 +64,31 @@ public class Teleop extends LinearOpMode
             else
                 driveSpeed = 1;
 
-            //wheel intake portion //uncomment when wheel intake added
+            //wheel intake portion
             if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
             {
-                robot.wheelIntake.setPower(gamepad2.right_trigger);
-                robot.wheelIntake.setPower(-gamepad2.left_trigger);
+                if(gamepad2.right_trigger == 0)
+                  robot.wheelIntake.setPower(gamepad2.left_trigger);
+                else
+                  robot.wheelIntake.setPower(-gamepad2.right_trigger);
             }
             else
             {
-                robot.wheelIntake.setPower(gamepad1.right_trigger);
-                robot.wheelIntake.setPower(-gamepad1.left_trigger);
+                if(gamepad1.right_trigger == 0)
+                    robot.wheelIntake.setPower(gamepad1.left_trigger);
+                else
+                    robot.wheelIntake.setPower(-gamepad1.right_trigger);
             }
 
             //sets transfer override
-            /*if(gamepad2.y) //uncomment when ready to set encoder positions
-                robot.transferOverride = true;
-            else
-                robot.transferOverride = false;*/
+            //comment this out if the slides get restrung
+            if(gamepad2.y && !y2Pressed)
+            {
+                robot.transferOverride = !robot.transferOverride;
+                y2Pressed = true;
+            }
+            else if(!gamepad2.y)
+                y2Pressed = false;
 
             //transfer level setup
             if(gamepad2.right_bumper && !bumper2Pressed && robot.transferLevel < 3)
@@ -95,15 +105,17 @@ public class Teleop extends LinearOpMode
                 bumper2Pressed = false;
 
             //transfer mech calls
-            if (robot.transferOverride) //add hard limits w/ encoders so you can't break slides here eventually
+            if (robot.transferOverride)
             {
-                if(gamepad2.left_stick_y == 0)
-                {
-                    robot.transferSlide.setTargetPosition(robot.transferSlide.getCurrentPosition());
-                    robot.transferSlide.setPower(.5);
-                }
-                else
+                robot.transferSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //keeps slides from moving to far to prevent damage
+                //if you have to restring the slides remove the if statements and don't use encoder positions
+                if(robot.transferSlide.getCurrentPosition() < 4150 && gamepad2.left_stick_y < 0)
+                  robot.transferSlide.setPower(-gamepad2.left_stick_y);
+                else if(robot.transferSlide.getCurrentPosition() > 200 && gamepad2.left_stick_y > 0)
                     robot.transferSlide.setPower(-gamepad2.left_stick_y);
+                else
+                    robot.transferSlide.setPower(0);
             }
             else
                 robot.transfer();
@@ -115,9 +127,9 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
             telemetry.addData("Slide Motor Position", robot.transferSlide.getCurrentPosition());
-            telemetry.addData("Intake Motor Power", robot.wheelIntake.getPower());
+            telemetry.addData("Slide Target Position", robot.transferSlide.getTargetPosition());
+            telemetry.addData("Slide Motor Power", robot.transferSlide.getPower());
             telemetry.update();
-
         }
     }
 }
