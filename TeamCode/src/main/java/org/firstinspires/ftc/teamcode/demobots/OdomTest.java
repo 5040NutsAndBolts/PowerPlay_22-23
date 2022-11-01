@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.demobots;
-/*
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +13,7 @@ public class OdomTest extends LinearOpMode
     @Override
     public void runOpMode() throws InterruptedException
     {
-        Hardware.currentOpMode=this;
+        /*Hardware.currentOpMode=this;
         Hardware robot = new Hardware(hardwareMap);
         waitForStart();
         robot.softBrake();
@@ -26,10 +26,6 @@ public class OdomTest extends LinearOpMode
             telemetry.addData("right",robot.rightEncoderPos);
             telemetry.addData("center",robot.centerEncoderPos);
             telemetry.update();
-        }
+        }*/
     }
-}
- */
-
-public class OdomTest {
 }
