@@ -110,7 +110,7 @@ public class Teleop extends LinearOpMode
                 robot.transferSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if you have to restring the slides remove the if statements and don't use encoder positions
-                if(robot.transferSlide.getCurrentPosition() < 4150 && gamepad2.left_stick_y < 0)
+                if(robot.transferSlide.getCurrentPosition() < 7800 && gamepad2.left_stick_y < 0)
                   robot.transferSlide.setPower(-gamepad2.left_stick_y);
                 else if(robot.transferSlide.getCurrentPosition() > 200 && gamepad2.left_stick_y > 0)
                     robot.transferSlide.setPower(-gamepad2.left_stick_y);

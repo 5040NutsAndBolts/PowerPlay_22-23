@@ -132,9 +132,9 @@ public class Hardware {
         }
         else if (transferLevel == 1)
         {
-            if (transferSlide.getCurrentPosition() < 2150 || transferSlide.getCurrentPosition() > 2250)
+            if (transferSlide.getCurrentPosition() < 2700 || transferSlide.getCurrentPosition() > 2900)
             {
-                transferSlide.setTargetPosition(2200);
+                transferSlide.setTargetPosition(2800);
                 transferSlide.setPower(1);
             }
             else
@@ -146,10 +146,10 @@ public class Hardware {
         }
         else if (transferLevel == 2)
         {
-            if (transferSlide.getCurrentPosition() < 3150 || transferSlide.getCurrentPosition() > 3250)
+            if (transferSlide.getCurrentPosition() < 4200 || transferSlide.getCurrentPosition() > 4400)
             {
                 transferSlide.setPower(1);
-                transferSlide.setTargetPosition(3200);
+                transferSlide.setTargetPosition(4300);
             }
             else
             {
@@ -160,16 +160,16 @@ public class Hardware {
         }
         else
         {
-            if (transferSlide.getCurrentPosition() > 4100)
+            if (transferSlide.getCurrentPosition() > 5900)
             {
-                transferSlide.setTargetPosition(4150);
+                transferSlide.setTargetPosition(5800);
                 transferSlide.setPower(0);
                 if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
                     transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             else
             {
-                transferSlide.setTargetPosition(4150);
+                transferSlide.setTargetPosition(5800);
                 transferSlide.setPower(1);
             }
         }
