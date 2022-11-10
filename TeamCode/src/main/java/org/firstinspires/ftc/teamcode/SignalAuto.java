@@ -100,7 +100,7 @@ public class SignalAuto extends LinearOpMode
                 while(timer.seconds() < 1.35 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
 
-                while (timer.seconds() < 2.5 && opModeIsActive())
+                while (timer.seconds() < 2.75 && opModeIsActive())
                     robot.robotODrive(.5,0,0);
             }
 

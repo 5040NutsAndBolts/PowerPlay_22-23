@@ -9,21 +9,20 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class MechanismTest extends OpMode
 {
     public DcMotorEx wheelA;
-    public DcMotorEx wheelB;
 
     @Override
     public void init() //initialization method
     {
         wheelA = hardwareMap.get(DcMotorEx.class, "wheel A");
-        wheelB = hardwareMap.get(DcMotorEx.class, "wheel B");
         wheelA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        wheelB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     @Override
     public void loop() //teleop loop
     {
-        wheelA.setPower(-gamepad1.right_trigger);
-        wheelB.setPower(-gamepad1.right_trigger);
+        if(gamepad1.left_trigger == 0)
+            wheelA.setPower(-gamepad1.right_trigger * .5);
+        else
+            wheelA.setPower(gamepad1.left_trigger * .5);
     }
 }
