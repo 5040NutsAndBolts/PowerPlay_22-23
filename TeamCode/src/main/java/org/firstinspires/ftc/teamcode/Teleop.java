@@ -21,6 +21,8 @@ public class Teleop extends LinearOpMode
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
         robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -65,19 +67,19 @@ public class Teleop extends LinearOpMode
             {
                 if(gamepad2.right_trigger == 0) //intake opening
                     //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(-gamepad2.left_trigger);
+                        robot.intakeMotor.setPower(-gamepad2.left_trigger * .25);
                 else //intake closing
                     //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(gamepad2.right_trigger);
+                        robot.intakeMotor.setPower(gamepad2.right_trigger * .25);
             }
             else
             {
                 if(gamepad1.right_trigger == 0) //bottom driver intake opening
                     //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(-gamepad1.left_trigger);
+                        robot.intakeMotor.setPower(-gamepad1.left_trigger * .25);
                 else //bottom driving intake closing
                     //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(gamepad1.right_trigger);
+                        robot.intakeMotor.setPower(gamepad1.right_trigger * .25);
             }
 
             //sets transfer override

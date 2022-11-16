@@ -87,10 +87,10 @@ public class Hardware {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         //odo
-        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
-        leftOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Left Odom");
-        rightOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Right Odom");
-        centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left Odom");
+        //expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
+        //leftOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Right");
+        //rightOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Right");
+        //centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left");
     }
 
     //robot-oriented drive method
