@@ -78,6 +78,7 @@ public class SignalAuto extends LinearOpMode
             //orange signal image, left park zone
             if(autoNumber == 1)
             {
+
                 while(timer.seconds() < 1.35 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
 
@@ -88,10 +89,14 @@ public class SignalAuto extends LinearOpMode
             //green signal image, middle park zone
             else if(autoNumber == 2)
             {
-                while (timer.seconds() < .2 && opModeIsActive())
-                    robot.robotODrive(0,.5,0);
-                while (timer.seconds() < 1.7 && opModeIsActive())
+                //Robot now just drives forward and parks
+                while (timer.seconds() < 1.5 && opModeIsActive())
                     robot.robotODrive(.5,0,0);
+                //old auto 2 below
+//                while (timer.seconds() < .2 && opModeIsActive())
+//                    robot.robotODrive(0,.5,0);
+//                while (timer.seconds() < 1.7 && opModeIsActive())
+//                    robot.robotODrive(.5,0,0);
             }
 
             //purple signal image, right park zone
