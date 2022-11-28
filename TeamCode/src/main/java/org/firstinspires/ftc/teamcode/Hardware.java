@@ -49,8 +49,8 @@ public class Hardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
-        transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+        //intakeMotor = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
+        //transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,11 +59,12 @@ public class Hardware {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        //transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //gyro setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

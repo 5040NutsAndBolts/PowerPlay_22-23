@@ -20,9 +20,9 @@ public class Teleop extends LinearOpMode
     {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
-        robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -60,30 +60,22 @@ public class Teleop extends LinearOpMode
                 driveSpeed = 1;
 
             //wheel intake portion
-            //all four if(robot.intakeMotor.getCurrentPosition() < 1000) lines need to be set with
-            // positions from telemetry and uncommented so the claw can't run to far, similar to how
-            // the slides work in manual control
-            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
+            /*if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
             {
                 if(gamepad2.right_trigger == 0) //intake opening
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
                         robot.intakeMotor.setPower(-gamepad2.left_trigger * .25);
                 else //intake closing
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
                         robot.intakeMotor.setPower(gamepad2.right_trigger * .25);
             }
             else
             {
                 if(gamepad1.right_trigger == 0) //bottom driver intake opening
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
                         robot.intakeMotor.setPower(-gamepad1.left_trigger * .25);
                 else //bottom driving intake closing
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
                         robot.intakeMotor.setPower(gamepad1.right_trigger * .25);
-            }
+            }*/
 
             //sets transfer override
-            //comment this out if the slides get restrung
             if(gamepad2.y && !y2Pressed)
             {
                 robot.transferOverride = !robot.transferOverride;
@@ -107,7 +99,7 @@ public class Teleop extends LinearOpMode
                 bumper2Pressed = false;
 
             //transfer mech calls
-            if (robot.transferOverride)
+            /*if (robot.transferOverride)
             {
                 robot.transferSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
@@ -120,7 +112,7 @@ public class Teleop extends LinearOpMode
                     robot.transferSlide.setPower(0);
             }
             else
-                robot.transfer();
+                robot.transfer();*/
 
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
@@ -128,7 +120,7 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
-            telemetry.addData("Claw Position", robot.intakeMotor.getCurrentPosition());
+            //telemetry.addData("Claw Position", robot.intakeMotor.getCurrentPosition());
             telemetry.update();
         }
     }
