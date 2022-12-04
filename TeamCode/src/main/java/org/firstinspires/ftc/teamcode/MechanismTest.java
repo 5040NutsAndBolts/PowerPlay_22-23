@@ -22,15 +22,15 @@ public class MechanismTest extends OpMode
     @Override
     public void loop() //teleop loop
     {
-        if(gamepad1.right_trigger == 0)
+        if(gamepad2.right_trigger == 0)
         {
-            rWheel.setPower(-gamepad1.left_trigger);
-            lWheel.setPower(gamepad1.left_trigger);
+            rWheel.setPower(-gamepad2.left_trigger);
+            lWheel.setPower(gamepad2.left_trigger);
         }
         else
         {
-            rWheel.setPower(gamepad1.right_trigger);
-            lWheel.setPower(-gamepad1.right_trigger);
+            rWheel.setPower(gamepad2.right_trigger);
+            lWheel.setPower(-gamepad2.right_trigger);
         }
 
         telemetry.addLine("looping :)");

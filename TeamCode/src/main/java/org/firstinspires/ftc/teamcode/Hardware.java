@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -26,8 +28,9 @@ public class Hardware {
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    public DcMotorEx intakeMotor;
     public DcMotorEx transferSlide;
+    public CRServo lWheel;
+    public CRServo rWheel;
 
     public BNO055IMU imu;
     public double adjust;
@@ -49,8 +52,10 @@ public class Hardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        //intakeMotor = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
-        //transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+        transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+
+        lWheel = hardwareMap.crservo.get("Left Wheel");
+        rWheel = hardwareMap.crservo.get("Right Wheel");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,12 +64,9 @@ public class Hardware {
 
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //gyro setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -135,9 +137,9 @@ public class Hardware {
         }
         else if (transferLevel == 1)
         {
-            if (transferSlide.getCurrentPosition() < 2150 || transferSlide.getCurrentPosition() > 2250)
+            if (transferSlide.getCurrentPosition() < 1950 || transferSlide.getCurrentPosition() > 2050)
             {
-                transferSlide.setTargetPosition(2200);
+                transferSlide.setTargetPosition(2000);
                 transferSlide.setPower(1);
             }
             else
@@ -149,10 +151,10 @@ public class Hardware {
         }
         else if (transferLevel == 2)
         {
-            if (transferSlide.getCurrentPosition() < 3150 || transferSlide.getCurrentPosition() > 3250)
+            if (transferSlide.getCurrentPosition() < 3450 || transferSlide.getCurrentPosition() > 3550)
             {
                 transferSlide.setPower(1);
-                transferSlide.setTargetPosition(3200);
+                transferSlide.setTargetPosition(3500);
             }
             else
             {
@@ -163,16 +165,16 @@ public class Hardware {
         }
         else
         {
-            if (transferSlide.getCurrentPosition() > 4100)
+            if (transferSlide.getCurrentPosition() > 4700)
             {
-                transferSlide.setTargetPosition(4150);
+                transferSlide.setTargetPosition(4750);
                 transferSlide.setPower(0);
                 if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
                     transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             else
             {
-                transferSlide.setTargetPosition(4150);
+                transferSlide.setTargetPosition(4750);
                 transferSlide.setPower(1);
             }
         }

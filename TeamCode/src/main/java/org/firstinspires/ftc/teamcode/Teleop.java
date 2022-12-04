@@ -20,9 +20,7 @@ public class Teleop extends LinearOpMode
     {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
-        //robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //robot.intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -60,20 +58,32 @@ public class Teleop extends LinearOpMode
                 driveSpeed = 1;
 
             //wheel intake portion
-            /*if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
+           if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
             {
                 if(gamepad2.right_trigger == 0) //intake opening
-                        robot.intakeMotor.setPower(-gamepad2.left_trigger * .25);
+                {
+                    robot.lWheel.setPower(-gamepad2.left_trigger);
+                    robot.rWheel.setPower(gamepad2.left_trigger);
+                }
                 else //intake closing
-                        robot.intakeMotor.setPower(gamepad2.right_trigger * .25);
+                {
+                    robot.lWheel.setPower(gamepad2.right_trigger);
+                    robot.rWheel.setPower(-gamepad2.right_trigger);
+                }
             }
-            else
+           else
             {
                 if(gamepad1.right_trigger == 0) //bottom driver intake opening
-                        robot.intakeMotor.setPower(-gamepad1.left_trigger * .25);
+                {
+                    robot.lWheel.setPower(-gamepad1.left_trigger);
+                    robot.rWheel.setPower(gamepad1.left_trigger);
+                }
                 else //bottom driving intake closing
-                        robot.intakeMotor.setPower(gamepad1.right_trigger * .25);
-            }*/
+                {
+                    robot.lWheel.setPower(gamepad1.right_trigger);
+                    robot.rWheel.setPower(-gamepad1.right_trigger);
+                }
+            }
 
             //sets transfer override
             if(gamepad2.y && !y2Pressed)
@@ -99,20 +109,20 @@ public class Teleop extends LinearOpMode
                 bumper2Pressed = false;
 
             //transfer mech calls
-            /*if (robot.transferOverride)
+            if (robot.transferOverride)
             {
                 robot.transferSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if slides are changed these lines might cause problems
-                if(robot.transferSlide.getCurrentPosition() < 7800 && gamepad2.left_stick_y < 0)
+                if(robot.transferSlide.getCurrentPosition() < 6000 && gamepad2.left_stick_y < 0)
                   robot.transferSlide.setPower(-gamepad2.left_stick_y);
-                else if(robot.transferSlide.getCurrentPosition() > 200 && gamepad2.left_stick_y > 0)
+                else if(robot.transferSlide.getCurrentPosition() > 50 && gamepad2.left_stick_y > 0)
                     robot.transferSlide.setPower(-gamepad2.left_stick_y);
                 else
                     robot.transferSlide.setPower(0);
             }
             else
-                robot.transfer();*/
+                robot.transfer();
 
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
@@ -120,7 +130,11 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
-            //telemetry.addData("Claw Position", robot.intakeMotor.getCurrentPosition());
+            telemetry.addData("Slide Position", robot.transferSlide.getCurrentPosition());
+            telemetry.addData("right trigger", gamepad2.right_trigger);
+            telemetry.addData("left trigger", gamepad2.left_trigger);
+            telemetry.addData("left wheel", robot.lWheel.getPower());
+            //telemetry.addData("right wheel", robot.rWheel.getPower());
             telemetry.update();
         }
     }
