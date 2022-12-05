@@ -21,7 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import static java.lang.Math.abs;
 
-public class Hardware {
+public class Hardware
+{
     //drive motor declaration
     public DcMotorEx frontLeft;
     public DcMotorEx frontRight;
@@ -42,6 +43,21 @@ public class Hardware {
     //helper class variables
     public double x = 0, y = 0, theta = 0;
     public static LinearOpMode currentOpMode;
+
+    //odo stuff
+    public RevBulkData bulkData;
+    public ExpansionHubEx expansionHub;
+
+    public ExpansionHubMotor leftOdom, rightOdom, centerOdom;
+
+    // Real world distance traveled by the wheels
+    public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
+
+    // Odometry encoder positions
+    public int leftEncoderPos, centerEncoderPos, rightEncoderPos;
+
+    public static final double ODOM_TICKS_PER_IN = 1898.130719;
+    public static double trackwidth = 10.39701829;
 
     //constructor method
     public Hardware(HardwareMap hardwareMap)
@@ -73,6 +89,13 @@ public class Hardware {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
+        //odo
+        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
+        //remeber to change these when I get the odo pods on
+        leftOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Left");
+        rightOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Right");
+        centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left");
     }
 
     //robot-oriented drive method
