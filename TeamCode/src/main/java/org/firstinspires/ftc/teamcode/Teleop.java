@@ -10,6 +10,7 @@ public class Teleop extends LinearOpMode
     public boolean rDrive = true;
     public boolean slowMode = false;
     public double driveSpeed = 1;
+    public double speedNerf;
 
     public boolean b1Pressed = false;
     public boolean y2Pressed = false;
@@ -20,7 +21,7 @@ public class Teleop extends LinearOpMode
     {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
-        robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -32,11 +33,16 @@ public class Teleop extends LinearOpMode
         {
             //robot oriented drive method call
             if (rDrive)
-                robot.robotODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
+                robot.robotODrive(gamepad1.left_stick_y * driveSpeed * speedNerf,
+                        gamepad1.left_stick_x * driveSpeed * speedNerf,
+                        gamepad1.right_stick_x * driveSpeed * speedNerf);
 
             //field oriented drive method call
             if (!rDrive)
-                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed, -gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed, gamepad1.right_stick_button);
+                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed * speedNerf,
+                        -gamepad1.left_stick_x * driveSpeed * speedNerf,
+                        gamepad1.right_stick_x * driveSpeed * speedNerf,
+                        gamepad1.right_stick_button);
 
             //drive mode toggles
             if (gamepad1.right_bumper)
@@ -49,13 +55,16 @@ public class Teleop extends LinearOpMode
             {
                 slowMode = !slowMode;
                 b1Pressed = true;
-            } else if (!gamepad1.b)
+            }
+            else if (!gamepad1.b)
                 b1Pressed = false;
 
             if (slowMode)
                 driveSpeed = .5;
             else
                 driveSpeed = 1;
+
+            speedNerf = ((6000 - robot.slideMotor.getCurrentPosition()) / 7000.0) + .15;
 
             //wheel intake portion
            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
@@ -111,15 +120,15 @@ public class Teleop extends LinearOpMode
             //transfer mech calls
             if (robot.transferOverride)
             {
-                robot.transferSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if slides are changed these lines might cause problems
-                if(robot.transferSlide.getCurrentPosition() < 6000 && gamepad2.left_stick_y < 0)
-                  robot.transferSlide.setPower(-gamepad2.left_stick_y);
-                else if(robot.transferSlide.getCurrentPosition() > 50 && gamepad2.left_stick_y > 0)
-                    robot.transferSlide.setPower(-gamepad2.left_stick_y);
+                if(robot.slideMotor.getCurrentPosition() < 6000 && gamepad2.left_stick_y < 0)
+                  robot.slideMotor.setPower(-gamepad2.left_stick_y);
+                else if(robot.slideMotor.getCurrentPosition() > 50 && gamepad2.left_stick_y > 0)
+                    robot.slideMotor.setPower(-gamepad2.left_stick_y);
                 else
-                    robot.transferSlide.setPower(0);
+                    robot.slideMotor.setPower(0);
             }
             else
                 robot.transfer();
@@ -130,11 +139,8 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
-            telemetry.addData("Slide Position", robot.transferSlide.getCurrentPosition());
-            telemetry.addData("right trigger", gamepad2.right_trigger);
-            telemetry.addData("left trigger", gamepad2.left_trigger);
-            telemetry.addData("left wheel", robot.lWheel.getPower());
-            //telemetry.addData("right wheel", robot.rWheel.getPower());
+            telemetry.addData("Slide Position", robot.slideMotor.getCurrentPosition());
+            telemetry.addData("Slow Down", speedNerf);
             telemetry.update();
         }
     }

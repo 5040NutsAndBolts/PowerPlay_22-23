@@ -3,14 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -28,7 +24,7 @@ public class Hardware {
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    public DcMotorEx transferSlide;
+    public DcMotorEx slideMotor;
     public CRServo lWheel;
     public CRServo rWheel;
 
@@ -52,7 +48,7 @@ public class Hardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+        slideMotor = hardwareMap.get(DcMotorEx.class, "Slide Motor");
 
         lWheel = hardwareMap.crservo.get("Left Wheel");
         rWheel = hardwareMap.crservo.get("Right Wheel");
@@ -65,8 +61,8 @@ public class Hardware {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //gyro setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -122,62 +118,62 @@ public class Hardware {
     {
         if ((transferLevel == 0))
         {
-            if (transferSlide.getCurrentPosition() < 100)
+            if (slideMotor.getCurrentPosition() < 100)
             {
-                transferSlide.setTargetPosition(0);
-                transferSlide.setPower(0);
-                if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
-                    transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                slideMotor.setTargetPosition(0);
+                slideMotor.setPower(0);
+                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
+                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
             else
             {
-                transferSlide.setTargetPosition(0);
-                transferSlide.setPower(1);
+                slideMotor.setTargetPosition(0);
+                slideMotor.setPower(1);
             }
         }
         else if (transferLevel == 1)
         {
-            if (transferSlide.getCurrentPosition() < 1950 || transferSlide.getCurrentPosition() > 2050)
+            if (slideMotor.getCurrentPosition() < 1950 || slideMotor.getCurrentPosition() > 2050)
             {
-                transferSlide.setTargetPosition(2000);
-                transferSlide.setPower(1);
+                slideMotor.setTargetPosition(2000);
+                slideMotor.setPower(1);
             }
             else
             {
-                transferSlide.setPower(0);
-                if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotor.setPower(0);
+                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
         }
         else if (transferLevel == 2)
         {
-            if (transferSlide.getCurrentPosition() < 3450 || transferSlide.getCurrentPosition() > 3550)
+            if (slideMotor.getCurrentPosition() < 3450 || slideMotor.getCurrentPosition() > 3550)
             {
-                transferSlide.setPower(1);
-                transferSlide.setTargetPosition(3500);
+                slideMotor.setPower(1);
+                slideMotor.setTargetPosition(3500);
             }
             else
             {
-                transferSlide.setPower(0);
-                if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotor.setPower(0);
+                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
         }
         else
         {
-            if (transferSlide.getCurrentPosition() > 4700)
+            if (slideMotor.getCurrentPosition() > 4700)
             {
-                transferSlide.setTargetPosition(4750);
-                transferSlide.setPower(0);
-                if (transferSlide.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotor.setTargetPosition(4750);
+                slideMotor.setPower(0);
+                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             else
             {
-                transferSlide.setTargetPosition(4750);
-                transferSlide.setPower(1);
+                slideMotor.setTargetPosition(4750);
+                slideMotor.setPower(1);
             }
         }
-        transferSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
