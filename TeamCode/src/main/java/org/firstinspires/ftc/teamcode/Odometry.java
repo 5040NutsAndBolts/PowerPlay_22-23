@@ -44,7 +44,7 @@ public class Odometry extends Hardware
     {
         try
         {
-            int total=bulkData.getMotorCurrentPosition(leftOdom);
+            int total=leftOdom.getCurrentPosition();
             int oldPos = leftEncoderPos;
             leftEncoderPos=total;
             return oldPos - total;
@@ -59,7 +59,7 @@ public class Odometry extends Hardware
     {
         try
         {
-            int total=bulkData.getMotorCurrentPosition(rightOdom);
+            int total=rightOdom.getCurrentPosition();
             int oldPos = rightEncoderPos;
             rightEncoderPos=total;
             return oldPos - total;
@@ -74,7 +74,7 @@ public class Odometry extends Hardware
     {
         try
         {
-            int total=bulkData.getMotorCurrentPosition(centerOdom);
+            int total=centerOdom.getCurrentPosition();
             int oldPos = centerEncoderPos;
             centerEncoderPos=total;
             return oldPos - total;
@@ -87,14 +87,14 @@ public class Odometry extends Hardware
 
     public void updatePositionRoadRunner()
     {
-        try
+        /*try
         {
             bulkData = expansionHub.getBulkInputData();
         }
         catch(Exception e)
         {
             return;
-        }
+        }*/
 
         // Change in the distance (centimeters) since the last update for each odometer
         double deltaLeftDist = -(getDeltaLeftTicks()/ ODOM_TICKS_PER_IN );

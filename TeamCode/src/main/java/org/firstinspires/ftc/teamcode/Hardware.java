@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
+import com.qualcomm.robotcore.hardware.CRServo;
+
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -33,8 +35,10 @@ public class Hardware {
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    public DcMotorEx wheelIntake;
     public DcMotorEx transferSlide;
+
+    public CRServo lWheel;
+    public CRServo rWheel;
 
     public BNO055IMU imu;
     public double adjust;
@@ -48,10 +52,10 @@ public class Hardware {
     public static LinearOpMode currentOpMode;
 
     //odo stuff
-    public RevBulkData bulkData;
-    public ExpansionHubEx expansionHub;
+    //public RevBulkData bulkData;
+    //public ExpansionHubEx expansionHub;
 
-    public ExpansionHubMotor leftOdom, rightOdom, centerOdom;
+    public DcMotorEx leftOdom, rightOdom, centerOdom;
 
     // Real world distance traveled by the wheels
     public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
@@ -71,8 +75,10 @@ public class Hardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        wheelIntake = hardwareMap.get(DcMotorEx.class, "Wheel Intake");
         transferSlide = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+
+        lWheel = hardwareMap.crservo.get("Left Wheel");
+        rWheel = hardwareMap.crservo.get("Right Wheel");
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -82,7 +88,6 @@ public class Hardware {
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        wheelIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         transferSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         transferSlide.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -94,10 +99,10 @@ public class Hardware {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         //odo
-        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
-        leftOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Left Odom");
-        rightOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Right Odom");
-        centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left Odom");
+        //expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
+        leftOdom = hardwareMap.get(DcMotorEx.class, "Front Left");
+        rightOdom = hardwareMap.get(DcMotorEx.class, "Front Right");
+        centerOdom = hardwareMap.get(DcMotorEx.class, "Back Left");
     }
 
     //robot-oriented drive method

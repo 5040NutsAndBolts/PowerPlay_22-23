@@ -60,17 +60,29 @@ public class Teleop extends LinearOpMode
             //wheel intake portion
             if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
             {
-                if(gamepad2.right_trigger == 0)
-                  robot.wheelIntake.setPower(gamepad2.left_trigger);
-                else
-                  robot.wheelIntake.setPower(-gamepad2.right_trigger);
+                if(gamepad2.right_trigger == 0) //intake opening
+                {
+                    robot.lWheel.setPower(-gamepad2.left_trigger);
+                    robot.rWheel.setPower(gamepad2.left_trigger);
+                }
+                else //intake closing
+                {
+                    robot.lWheel.setPower(gamepad2.right_trigger);
+                    robot.rWheel.setPower(-gamepad2.right_trigger);
+                }
             }
             else
             {
-                if(gamepad1.right_trigger == 0)
-                    robot.wheelIntake.setPower(gamepad1.left_trigger);
-                else
-                    robot.wheelIntake.setPower(-gamepad1.right_trigger);
+                if(gamepad1.right_trigger == 0) //bottom driver intake opening
+                {
+                    robot.lWheel.setPower(-gamepad1.left_trigger);
+                    robot.rWheel.setPower(gamepad1.left_trigger);
+                }
+                else //bottom driving intake closing
+                {
+                    robot.lWheel.setPower(gamepad1.right_trigger);
+                    robot.rWheel.setPower(-gamepad1.right_trigger);
+                }
             }
 
             //sets transfer override
