@@ -2,28 +2,38 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @TeleOp(name = "Mechanism Test", group = "Teleop")
 public class MechanismTest extends OpMode
 {
-    public DcMotorEx wheelA;
-    public DcMotorEx wheelB;
+    public CRServo lWheel;
+    public CRServo rWheel;
 
     @Override
     public void init() //initialization method
     {
-        wheelA = hardwareMap.get(DcMotorEx.class, "wheel A");
-        wheelB = hardwareMap.get(DcMotorEx.class, "wheel B");
-        wheelA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        wheelB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lWheel = hardwareMap.crservo.get("Left Wheel");
+        rWheel = hardwareMap.crservo.get("Right Wheel");
     }
 
     @Override
     public void loop() //teleop loop
     {
-        wheelA.setPower(-gamepad1.right_trigger);
-        wheelB.setPower(-gamepad1.right_trigger);
+        if(gamepad2.right_trigger == 0)
+        {
+            rWheel.setPower(-gamepad2.left_trigger);
+            lWheel.setPower(gamepad2.left_trigger);
+        }
+        else
+        {
+            rWheel.setPower(gamepad2.right_trigger);
+            lWheel.setPower(-gamepad2.right_trigger);
+        }
+
+        telemetry.addLine("looping :)");
+        telemetry.update();
     }
 }
