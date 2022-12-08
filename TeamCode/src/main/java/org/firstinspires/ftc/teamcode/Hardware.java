@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -41,10 +38,10 @@ public class Hardware {
     public static LinearOpMode currentOpMode;
 
     //odo stuff
-    public RevBulkData bulkData;
+   /*public RevBulkData bulkData;
     public ExpansionHubEx expansionHub;
 
-    public ExpansionHubMotor leftOdom, rightOdom, centerOdom;
+    public ExpansionHubMotor leftOdom, rightOdom, centerOdom;*/
 
     // Real world distance traveled by the wheels
     public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
@@ -87,10 +84,10 @@ public class Hardware {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         //odo
-        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
+        /*expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
         leftOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Left Odom");
         rightOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Right Odom");
-        centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left Odom");
+        centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left Odom");*/
     }
 
     //robot-oriented drive method
