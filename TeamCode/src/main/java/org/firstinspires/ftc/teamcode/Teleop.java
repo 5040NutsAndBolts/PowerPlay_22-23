@@ -64,7 +64,15 @@ public class Teleop extends LinearOpMode
             else
                 driveSpeed = 1;
 
-            speedNerf = ((6000 - robot.slideMotor.getCurrentPosition()) / 7000.0) + .15;
+            //makes robot slow down when the slides are up
+            if(robot.slideMotor.getCurrentPosition() <= 1000)
+                speedNerf = 1.0;
+            else if(robot.slideMotor.getCurrentPosition() <= 3000)
+                speedNerf = ((5000 - robot.slideMotor.getCurrentPosition()) / 4000.0);
+            else if(robot.slideMotor.getCurrentPosition() <= 4000)
+                speedNerf = ((5000 - robot.slideMotor.getCurrentPosition()) / 4000.0);
+            else
+                speedNerf = ((12000 - robot.slideMotor.getCurrentPosition()) / 40000.0) + .05;
 
             //wheel intake portion
            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
