@@ -15,13 +15,15 @@ public class Teleop extends LinearOpMode
     public boolean b1Pressed = false;
     public boolean y2Pressed = false;
     public boolean bumper2Pressed = false;
+    public boolean slideReset = false;
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         //initializes robot object
-        Hardware robot = new Hardware(hardwareMap);
+        Odometry robot = new Odometry(hardwareMap);
         robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.resetOdometry(0,0,0);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -65,14 +67,14 @@ public class Teleop extends LinearOpMode
                 driveSpeed = 1;
 
             //makes robot slow down when the slides are up
-            if(robot.slideMotor.getCurrentPosition() <= 1000)
+            if(robot.slideMotor.getCurrentPosition() <= 333)
                 speedNerf = 1.0;
-            else if(robot.slideMotor.getCurrentPosition() <= 3000)
-                speedNerf = ((5000 - robot.slideMotor.getCurrentPosition()) / 4000.0);
-            else if(robot.slideMotor.getCurrentPosition() <= 4000)
-                speedNerf = ((5000 - robot.slideMotor.getCurrentPosition()) / 4000.0);
+            else if(robot.slideMotor.getCurrentPosition() <= 1000)
+                speedNerf = ((1666 - robot.slideMotor.getCurrentPosition()) / 1333.0);
+            else if(robot.slideMotor.getCurrentPosition() <= 1333)
+                speedNerf = ((1666 - robot.slideMotor.getCurrentPosition()) / 1333.0);
             else
-                speedNerf = ((12000 - robot.slideMotor.getCurrentPosition()) / 40000.0) + .05;
+                speedNerf = ((4000 - robot.slideMotor.getCurrentPosition()) / 13333.0) + .05;
 
             //wheel intake portion
            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
@@ -128,18 +130,27 @@ public class Teleop extends LinearOpMode
             //transfer mech calls
             if (robot.transferOverride)
             {
-                robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if slides are changed these lines might cause problems
-                if(robot.slideMotor.getCurrentPosition() < 6000 && gamepad2.left_stick_y < 0)
+                if(robot.slideMotor.getCurrentPosition() < 2000 && gamepad2.left_stick_y < 0)
                   robot.slideMotor.setPower(-gamepad2.left_stick_y);
-                else if(robot.slideMotor.getCurrentPosition() > 50 && gamepad2.left_stick_y > 0)
+                else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
                     robot.slideMotor.setPower(-gamepad2.left_stick_y);
                 else
                     robot.slideMotor.setPower(0);
             }
             else
                 robot.transfer();
+
+            if(robot.limitSwitch.getState())
+            {
+                robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+
+            //odo method call, delete after testing
+            robot.updatePositionRoadRunner();
 
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Robot Drive", rDrive);
@@ -149,6 +160,14 @@ public class Teleop extends LinearOpMode
             telemetry.addLine();
             telemetry.addData("Slide Position", robot.slideMotor.getCurrentPosition());
             telemetry.addData("Slow Down", speedNerf);
+            telemetry.addData("Limit Switch", robot.limitSwitch.getState());
+            telemetry.addLine();
+            telemetry.addData("left", robot.leftEncoderPos);
+            telemetry.addData("right", robot.rightEncoderPos);
+            telemetry.addData("center", robot.centerEncoderPos);
+            telemetry.addData("x", robot.x);
+            telemetry.addData("y", robot.y);
+            telemetry.addData("theta", robot.theta);
             telemetry.update();
         }
     }

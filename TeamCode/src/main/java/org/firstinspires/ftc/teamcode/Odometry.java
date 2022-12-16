@@ -101,6 +101,12 @@ public class Odometry extends Hardware
         double deltaRightDist = -(getDeltaRightTicks()/ ODOM_TICKS_PER_IN );
         double deltaCenterDist = getDeltaCenterTicks()/ ODOM_TICKS_PER_IN;
 
+        //adjusts for physical diffrences in pods
+        if(deltaLeftDist < 0)
+            deltaRightDist *= (1.00052425 * 0.99770514);
+        else if (deltaLeftDist > 0)
+            deltaRightDist *= (1.00076168 * 0.99859913);
+
         leftOdomTraveled += deltaLeftDist;
         rightOdomTraveled += deltaRightDist;
         centerOdomTraveled += deltaCenterDist;
@@ -131,4 +137,13 @@ public class Odometry extends Hardware
         centerOdom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         centerOdom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    public void softBrake()
+    {
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
 }

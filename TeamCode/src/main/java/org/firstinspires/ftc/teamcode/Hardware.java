@@ -9,11 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.openftc.revextensions2.ExpansionHubEx;
-import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
-import com.qualcomm.robotcore.hardware.CRServo;
-
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -30,8 +26,6 @@ import static java.lang.Math.abs;
 
 public class Hardware
 {
-
-public class Hardware {
     //drive motor declaration
     public DcMotorEx frontLeft;
     public DcMotorEx frontRight;
@@ -45,6 +39,8 @@ public class Hardware {
     public BNO055IMU imu;
     public double adjust;
 
+    public DigitalChannel limitSwitch;
+
     //tracking variables
     public int transferLevel = 0;
     public boolean transferOverride = true;
@@ -52,6 +48,17 @@ public class Hardware {
     //helper class variables
     public double x = 0, y = 0, theta = 0;
     public static LinearOpMode currentOpMode;
+
+    public DcMotorEx leftOdom, rightOdom, centerOdom;
+
+    // Real world distance traveled by the wheels
+    public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
+
+    // Odometry encoder positions
+    public int leftEncoderPos, centerEncoderPos, rightEncoderPos;
+
+    public static final double ODOM_TICKS_PER_IN = 1945.083708;
+    public static double trackwidth = 10.56198075;
 
     //constructor method
     public Hardware(HardwareMap hardwareMap)
@@ -84,12 +91,12 @@ public class Hardware {
         imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        //odo
-        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Control Hub");
-        //remeber to change these when I get the odo pods on
-        leftOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Left");
-        rightOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Front Right");
-        centerOdom = (ExpansionHubMotor) hardwareMap.dcMotor.get("Back Left");
+        limitSwitch = hardwareMap.get(DigitalChannel.class, "Limit Switch");
+
+        //odom
+        leftOdom = hardwareMap.get(DcMotorEx.class, "Front Left");
+        rightOdom = hardwareMap.get(DcMotorEx.class, "Front Right");
+        centerOdom = hardwareMap.get(DcMotorEx.class, "Back Right");
     }
 
     //robot-oriented drive method
@@ -154,9 +161,9 @@ public class Hardware {
         }
         else if (transferLevel == 1)
         {
-            if (slideMotor.getCurrentPosition() < 1950 || slideMotor.getCurrentPosition() > 2050)
+            if (slideMotor.getCurrentPosition() < 1000 || slideMotor.getCurrentPosition() > 1050)
             {
-                slideMotor.setTargetPosition(2000);
+                slideMotor.setTargetPosition(1000);
                 slideMotor.setPower(1);
             }
             else
@@ -168,10 +175,10 @@ public class Hardware {
         }
         else if (transferLevel == 2)
         {
-            if (slideMotor.getCurrentPosition() < 3450 || slideMotor.getCurrentPosition() > 3550)
+            if (slideMotor.getCurrentPosition() < 1350 || slideMotor.getCurrentPosition() > 1450)
             {
                 slideMotor.setPower(1);
-                slideMotor.setTargetPosition(3500);
+                slideMotor.setTargetPosition(1400);
             }
             else
             {
@@ -182,16 +189,16 @@ public class Hardware {
         }
         else
         {
-            if (slideMotor.getCurrentPosition() > 4700)
+            if (slideMotor.getCurrentPosition() > 1900)
             {
-                slideMotor.setTargetPosition(4750);
+                slideMotor.setTargetPosition(1950);
                 slideMotor.setPower(0);
                 if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
                     slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             else
             {
-                slideMotor.setTargetPosition(4750);
+                slideMotor.setTargetPosition(1950);
                 slideMotor.setPower(1);
             }
         }
