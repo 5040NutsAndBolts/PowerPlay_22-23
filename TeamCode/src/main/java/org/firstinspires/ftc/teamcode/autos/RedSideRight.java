@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autos;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -65,23 +67,13 @@ public class RedSideRight extends LinearOpMode
             telemetry.update();
         }
 
+        robot.resetOdometry(0,80,0);
+
         waitForStart();
 
         while(opModeIsActive())
         {
-            while(robot.x > -30)
-                robot.robotODrive(.75,0,0);
 
-            if(autoNumber == 1)
-            {
-                while(robot.y > -15)
-                    robot.robotODrive(0,.75,0);
-            }
-            else if (autoNumber == 3)
-            {
-                while(robot.y < 15)
-                    robot.robotODrive(0,-.75,0);
-            }
 
             robot.robotODrive(0,0,0);
         }

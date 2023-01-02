@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends LinearOpMode
@@ -11,8 +14,10 @@ public class Teleop extends LinearOpMode
     public boolean slowMode = false;
     public double driveSpeed = 1;
     public double speedNerf;
+    public boolean slowdownOverride = false;
 
     public boolean b1Pressed = false;
+    public boolean a1Pressed = false;
     public boolean y2Pressed = false;
     public boolean bumper2Pressed = false;
     public boolean slideReset = false;
@@ -22,11 +27,15 @@ public class Teleop extends LinearOpMode
     {
         //initializes robot object
         Odometry robot = new Odometry(hardwareMap);
-        robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.resetOdometry(0,0,0);
 
         telemetry.addLine("init done");
         telemetry.update();
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
         waitForStart();
 
@@ -66,15 +75,29 @@ public class Teleop extends LinearOpMode
             else
                 driveSpeed = 1;
 
-            //makes robot slow down when the slides are up
-            if(robot.slideMotor.getCurrentPosition() <= 333)
-                speedNerf = 1.0;
-            else if(robot.slideMotor.getCurrentPosition() <= 1000)
-                speedNerf = ((1666 - robot.slideMotor.getCurrentPosition()) / 1333.0);
-            else if(robot.slideMotor.getCurrentPosition() <= 1333)
-                speedNerf = ((1666 - robot.slideMotor.getCurrentPosition()) / 1333.0);
+            //slowdown override
+            if(gamepad1.a && !a1Pressed)
+            {
+                slowdownOverride = !slowdownOverride;
+                a1Pressed = true;
+            }
+            else if (!gamepad1.a)
+                a1Pressed = false;
+
+            //slows down the drivetrain when the slides are up
+            if(!slowdownOverride)
+            {
+                if(robot.slideMotorA.getCurrentPosition() <= 900)
+                    speedNerf = 1.0;
+                else if(robot.slideMotorA.getCurrentPosition() <= 1700)
+                    speedNerf = ((2600 - robot.slideMotorA.getCurrentPosition()) / 3200.0) + 0.47;
+                else if(robot.slideMotorA.getCurrentPosition() <= 2400)
+                    speedNerf = ((3300 - robot.slideMotorA.getCurrentPosition()) / 2000.0) - 0.05;
+                else
+                    speedNerf = ((3000 - robot.slideMotorA.getCurrentPosition()) / 2000.0) + 0.1;
+            }
             else
-                speedNerf = ((4000 - robot.slideMotor.getCurrentPosition()) / 13333.0) + .05;
+                speedNerf = 1;
 
             //wheel intake portion
            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
@@ -133,42 +156,53 @@ public class Teleop extends LinearOpMode
                 //robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if slides are changed these lines might cause problems
-                if(robot.slideMotor.getCurrentPosition() < 2000 && gamepad2.left_stick_y < 0)
-                  robot.slideMotor.setPower(-gamepad2.left_stick_y);
+                if(robot.slideMotorA.getCurrentPosition() < 2800 && gamepad2.left_stick_y < 0)
+                {
+                    robot.slideMotorA.setPower(-gamepad2.left_stick_y);
+                    robot.slideMotorB.setPower(-gamepad2.left_stick_y);
+                }
                 else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
-                    robot.slideMotor.setPower(-gamepad2.left_stick_y);
+                {
+                    robot.slideMotorA.setPower(-gamepad2.left_stick_y * 0.50);
+                    robot.slideMotorB.setPower(-gamepad2.left_stick_y * 0.50);
+                }
                 else
-                    robot.slideMotor.setPower(0);
+                {
+                    robot.slideMotorA.setPower(0);
+                    robot.slideMotorB.setPower(0);
+                }
             }
             else
                 robot.transfer();
 
             if(robot.limitSwitch.getState())
             {
-                robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
 
             //odo method call, delete after testing
             robot.updatePositionRoadRunner();
 
             telemetry.addData("Slow Mode", slowMode);
+            telemetry.addData("Slowdown Override", slowdownOverride);
             telemetry.addData("Robot Drive", rDrive);
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
-            telemetry.addData("Slide Position", robot.slideMotor.getCurrentPosition());
+            telemetry.addData("Slide Position", robot.slideMotorA.getCurrentPosition());
             telemetry.addData("Slow Down", speedNerf);
             telemetry.addData("Limit Switch", robot.limitSwitch.getState());
-            telemetry.addLine();
-            telemetry.addData("left", robot.leftEncoderPos);
-            telemetry.addData("right", robot.rightEncoderPos);
-            telemetry.addData("center", robot.centerEncoderPos);
-            telemetry.addData("x", robot.x);
-            telemetry.addData("y", robot.y);
-            telemetry.addData("theta", robot.theta);
             telemetry.update();
+
+            dashboardTelemetry.addData("left", robot.leftEncoderPos);
+            dashboardTelemetry.addData("right", robot.rightEncoderPos);
+            dashboardTelemetry.addData("center", robot.centerEncoderPos);
+            dashboardTelemetry.addData("x", robot.x);
+            dashboardTelemetry.addData("y", robot.y);
+            dashboardTelemetry.addData("theta", robot.theta);
+            dashboardTelemetry.update();
         }
     }
 }

@@ -111,10 +111,11 @@ public class Odometry extends Hardware
         rightOdomTraveled += deltaRightDist;
         centerOdomTraveled += deltaCenterDist;
 
+        //add negatives here to reverse x or y directions
         odom.update();
         theta = odom.getPoseEstimate().component3();
-        x = -odom.getPoseEstimate().component1();
-        y = -odom.getPoseEstimate().component2();
+        x = odom.getPoseEstimate().component1();
+        y = odom.getPoseEstimate().component2();
     }
 
     public void resetOdometry(double x, double y, double theta)

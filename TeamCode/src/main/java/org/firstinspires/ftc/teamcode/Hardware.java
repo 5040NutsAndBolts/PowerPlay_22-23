@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -18,10 +16,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static java.lang.Math.abs;
 
 public class Hardware
@@ -32,7 +26,8 @@ public class Hardware
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    public DcMotorEx slideMotor;
+    public DcMotorEx slideMotorA;
+    public DcMotorEx slideMotorB;
     public CRServo lWheel;
     public CRServo rWheel;
 
@@ -69,7 +64,8 @@ public class Hardware
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        slideMotor = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+        slideMotorA = hardwareMap.get(DcMotorEx.class, "Slide Motor A");
+        slideMotorB = hardwareMap.get(DcMotorEx.class, "Slide Motor B");
 
         lWheel = hardwareMap.crservo.get("Left Wheel");
         rWheel = hardwareMap.crservo.get("Right Wheel");
@@ -82,8 +78,9 @@ public class Hardware
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotorA.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //gyro setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -146,62 +143,62 @@ public class Hardware
     {
         if ((transferLevel == 0))
         {
-            if (slideMotor.getCurrentPosition() < 100)
+            if (slideMotorA.getCurrentPosition() < 100)
             {
-                slideMotor.setTargetPosition(0);
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                slideMotorA.setTargetPosition(0);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
             else
             {
-                slideMotor.setTargetPosition(0);
-                slideMotor.setPower(1);
+                slideMotorA.setTargetPosition(0);
+                slideMotorA.setPower(1);
             }
         }
         else if (transferLevel == 1)
         {
-            if (slideMotor.getCurrentPosition() < 1000 || slideMotor.getCurrentPosition() > 1050)
+            if (slideMotorA.getCurrentPosition() < 1000 || slideMotorA.getCurrentPosition() > 1050)
             {
-                slideMotor.setTargetPosition(1000);
-                slideMotor.setPower(1);
+                slideMotorA.setTargetPosition(1000);
+                slideMotorA.setPower(1);
             }
             else
             {
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
         }
         else if (transferLevel == 2)
         {
-            if (slideMotor.getCurrentPosition() < 1350 || slideMotor.getCurrentPosition() > 1450)
+            if (slideMotorA.getCurrentPosition() < 1350 || slideMotorA.getCurrentPosition() > 1450)
             {
-                slideMotor.setPower(1);
-                slideMotor.setTargetPosition(1400);
+                slideMotorA.setPower(1);
+                slideMotorA.setTargetPosition(1400);
             }
             else
             {
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
         }
         else
         {
-            if (slideMotor.getCurrentPosition() > 1900)
+            if (slideMotorA.getCurrentPosition() > 1900)
             {
-                slideMotor.setTargetPosition(1950);
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotorA.setTargetPosition(1950);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             else
             {
-                slideMotor.setTargetPosition(1950);
-                slideMotor.setPower(1);
+                slideMotorA.setTargetPosition(1950);
+                slideMotorA.setPower(1);
             }
         }
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotorA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
