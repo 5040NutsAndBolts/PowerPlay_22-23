@@ -15,6 +15,9 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
 @Autonomous(name = "Red Right Auto", group = "Autonomous")
 public class RedSideRight extends LinearOpMode
 {
@@ -67,7 +70,7 @@ public class RedSideRight extends LinearOpMode
             telemetry.update();
         }
 
-        robot.resetOdometry(0,80,0);
+       robot.setPoseEstimate(new Pose2d(36, -72));
 
         waitForStart();
 

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
+
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -18,7 +21,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import static java.lang.Math.abs;
 
-public class Hardware
+import java.util.ArrayList;
+import java.util.List;
+
+//class header, MechanumDrive extend is needed for RoadRunner
+public class Hardware extends MecanumDrive
 {
     //drive motor declaration
     public DcMotorEx frontLeft;
@@ -58,6 +65,8 @@ public class Hardware
     //constructor method
     public Hardware(HardwareMap hardwareMap)
     {
+        super(0.0199,0.0055,0.0,10.56198075, 11.97, 1);
+
         //drive motor initialization
         frontLeft = hardwareMap.get(DcMotorEx.class, "Front Left");
         frontRight = hardwareMap.get(DcMotorEx.class, "Front Right");
@@ -75,8 +84,8 @@ public class Hardware
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -200,5 +209,26 @@ public class Hardware
             }
         }
         slideMotorA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    //all methods below this have to be here to avoid errors and should be ignored
+    @Override
+    public void setMotorPowers(double v, double v1, double v2, double v3)
+    {
+        frontLeft.setPower(v);
+        backLeft.setPower(v1);
+        backRight.setPower(v2);
+        frontRight.setPower(v3);
+    }
+
+    @Override
+    public List<Double> getWheelPositions() {
+        List<Double> wheelPositions = new ArrayList<>();
+        return wheelPositions;
+    }
+
+    @Override
+    public double getRawExternalHeading() {
+        return imu.getAngularOrientation().firstAngle;
     }
 }

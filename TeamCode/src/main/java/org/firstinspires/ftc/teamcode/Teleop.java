@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -26,10 +27,16 @@ public class Teleop extends LinearOpMode
     public void runOpMode() throws InterruptedException
     {
         //initializes robot object
-        Odometry robot = new Odometry(hardwareMap);
+        Hardware robot = new Hardware(hardwareMap);
         robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.resetOdometry(0,0,0);
+
+        //the motors need to be the opposite of what they should be in teleop for autos to work
+        //you should never reverse motors here unless you really have to
+        robot.frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addLine("init done");
         telemetry.update();
@@ -181,9 +188,6 @@ public class Teleop extends LinearOpMode
                 robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }
 
-            //odo method call, delete after testing
-            robot.updatePositionRoadRunner();
-
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Slowdown Override", slowdownOverride);
             telemetry.addData("Robot Drive", rDrive);
@@ -195,14 +199,6 @@ public class Teleop extends LinearOpMode
             telemetry.addData("Slow Down", speedNerf);
             telemetry.addData("Limit Switch", robot.limitSwitch.getState());
             telemetry.update();
-
-            dashboardTelemetry.addData("left", robot.leftEncoderPos);
-            dashboardTelemetry.addData("right", robot.rightEncoderPos);
-            dashboardTelemetry.addData("center", robot.centerEncoderPos);
-            dashboardTelemetry.addData("x", robot.x);
-            dashboardTelemetry.addData("y", robot.y);
-            dashboardTelemetry.addData("theta", robot.theta);
-            dashboardTelemetry.update();
         }
     }
 }
