@@ -20,8 +20,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name = "Red Left Auto", group = "Autonomous")
-public class RedSideLeft extends LinearOpMode
+@Autonomous(name = "Blue Left Auto", group = "Autonomous")
+public class BlueSideLeft extends LinearOpMode
 {
     int autoNumber = 1;
 
@@ -82,7 +82,7 @@ public class RedSideLeft extends LinearOpMode
             telemetry.update();
         }
 
-        Pose2d startPose = new Pose2d(-64, 30);
+        Pose2d startPose = new Pose2d(64, -30);
         robot.setPoseEstimate(startPose);
 
         waitForStart();
@@ -91,14 +91,14 @@ public class RedSideLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     counterSpin = true;
                 })
-                .splineTo(new Vector2d(-50, 14), 0,
+                .splineTo(new Vector2d(50, -14), 0,
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 3;
                     counterSpin = false;
                 })
-                .splineTo(new Vector2d(-27, 4), Math.toRadians(300),
+                .splineTo(new Vector2d(27, -4), Math.toRadians(300),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -112,7 +112,7 @@ public class RedSideLeft extends LinearOpMode
         backAway1 = robot.trajectoryBuilder(preloadGoal0.end(), Math.toRadians(300))
                 .addDisplacementMarker(() -> {
                 })
-                .strafeTo(new Vector2d(-35, 12),
+                .strafeTo(new Vector2d(35, -12),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -125,10 +125,10 @@ public class RedSideLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 0;
                 })
-                .splineTo(new Vector2d(-16, 16), Math.toRadians(90),
+                .splineTo(new Vector2d(16, -16), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineTo(new Vector2d(-6, 28), Math.toRadians(300),
+                .splineTo(new Vector2d(6, -28), Math.toRadians(300),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -142,19 +142,19 @@ public class RedSideLeft extends LinearOpMode
                 .build();
 
         park1X = robot.trajectoryBuilder(loopSetup2.end())
-                .strafeTo(new Vector2d(-14,36))
-                .splineTo(new Vector2d(-12,60), Math.toRadians(90),
+                .strafeTo(new Vector2d(14,-36))
+                .splineTo(new Vector2d(12,-60), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         park2X = robot.trajectoryBuilder(loopSetup2.end())
-                .strafeTo(new Vector2d(-15,38))
+                .strafeTo(new Vector2d(15,-38))
                 .build();
 
         park3X = robot.trajectoryBuilder(loopSetup2.end())
-                .strafeTo(new Vector2d(-14,36))
-                .splineTo(new Vector2d(-10,10), Math.toRadians(270),
+                .strafeTo(new Vector2d(14,-36))
+                .splineTo(new Vector2d(10,-10), Math.toRadians(270),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
