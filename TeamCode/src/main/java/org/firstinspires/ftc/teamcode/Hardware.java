@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.pow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,14 +152,25 @@ public class Hardware extends MecanumDrive
     //method to run slides
     public void transfer()
     {
+        if(slideMotorA.getVelocity() > 400)
+            slideMotorB.setPower(1);
+        else if(slideMotorA.getVelocity() < -400)
+            slideMotorB.setPower(-1);
+        else
+            slideMotorB.setPower(0);
+
         if ((transferLevel == 0))
         {
             if (slideMotorA.getCurrentPosition() < 100)
             {
                 slideMotorA.setTargetPosition(0);
                 slideMotorA.setPower(0);
+                slideMotorB.setPower(0);
                 if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
+                {
                     slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                }
             }
             else
             {
@@ -167,48 +180,95 @@ public class Hardware extends MecanumDrive
         }
         else if (transferLevel == 1)
         {
-            if (slideMotorA.getCurrentPosition() < 1000 || slideMotorA.getCurrentPosition() > 1050)
+            if (slideMotorA.getCurrentPosition() < 850 || slideMotorA.getCurrentPosition() > 950)
             {
-                slideMotorA.setTargetPosition(1000);
+                slideMotorA.setTargetPosition(900);
                 slideMotorA.setPower(1);
             }
             else
             {
                 slideMotorA.setPower(0);
                 if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                {
                     slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
             }
         }
         else if (transferLevel == 2)
         {
-            if (slideMotorA.getCurrentPosition() < 1350 || slideMotorA.getCurrentPosition() > 1450)
+            if (slideMotorA.getCurrentPosition() < 1650 || slideMotorA.getCurrentPosition() > 1750)
             {
                 slideMotorA.setPower(1);
-                slideMotorA.setTargetPosition(1400);
+                slideMotorA.setTargetPosition(1700);
             }
             else
             {
                 slideMotorA.setPower(0);
                 if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                {
                     slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
             }
         }
         else
         {
-            if (slideMotorA.getCurrentPosition() > 1900)
+            if (slideMotorA.getCurrentPosition() > 2400)
             {
-                slideMotorA.setTargetPosition(1950);
+                slideMotorA.setTargetPosition(2450);
                 slideMotorA.setPower(0);
                 if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                {
                     slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
             }
             else
             {
-                slideMotorA.setTargetPosition(1950);
+                slideMotorA.setTargetPosition(2450);
                 slideMotorA.setPower(1);
             }
         }
         slideMotorA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    //auto method for intaking and depositing
+    public void depositCone()
+    {
+        ElapsedTime t = new ElapsedTime();
+        t.startTime();
+
+        while(t.seconds() < 0.5)
+        {
+            rWheel.setPower(1);
+            lWheel.setPower(-1);
+        }
+        rWheel.setPower(0);
+        lWheel.setPower(0);
+    }
+
+    public void intakeCone()
+    {
+        ElapsedTime t = new ElapsedTime();
+        t.startTime();
+
+        while(t.seconds() < 0.5)
+        {
+            rWheel.setPower(-1);
+            lWheel.setPower(1);
+        }
+        rWheel.setPower(0);
+        lWheel.setPower(0);
+    }
+
+    public void runCounterSpin(boolean spin)
+    {
+        if(spin)
+        {
+            rWheel.setPower(-0.1);
+            lWheel.setPower(0.1);
+        }
     }
 
     //all methods below this have to be here to avoid errors and should be ignored

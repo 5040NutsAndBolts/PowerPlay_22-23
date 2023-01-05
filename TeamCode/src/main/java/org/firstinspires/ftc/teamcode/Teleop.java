@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends LinearOpMode
@@ -190,14 +191,18 @@ public class Teleop extends LinearOpMode
 
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Slowdown Override", slowdownOverride);
+            telemetry.addData("Slow Down", speedNerf);
             telemetry.addData("Robot Drive", rDrive);
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
             telemetry.addData("Slide Position", robot.slideMotorA.getCurrentPosition());
-            telemetry.addData("Slow Down", speedNerf);
             telemetry.addData("Limit Switch", robot.limitSwitch.getState());
+            telemetry.addData("Motor A Power", robot.slideMotorA.getPower());
+            telemetry.addData("Motor B Power", robot.slideMotorB.getPower());
+            telemetry.addData("A current", robot.slideMotorA.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("A velocity", robot.slideMotorA.getVelocity());
             telemetry.update();
         }
     }
