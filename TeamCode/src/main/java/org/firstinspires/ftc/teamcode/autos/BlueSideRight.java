@@ -56,7 +56,7 @@ public class BlueSideRight extends LinearOpMode
 
         RoadRunner robot = new RoadRunner(hardwareMap);
 
-        Pose2d startPose = new Pose2d(64, 40);
+        Pose2d startPose = new Pose2d(64, 40, Math.toRadians(180));
         robot.setPoseEstimate(startPose);
 
         //runs camera and associated programs
@@ -90,27 +90,25 @@ public class BlueSideRight extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     counterSpin = true;
                 })
-                .splineTo(new Vector2d(46, 10), 0,
+                .splineTo(new Vector2d(46, 12), Math.toRadians(180),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 3;
-                    counterSpin = false;
                 })
-                .splineTo(new Vector2d(26, 4), Math.PI / 4,
+                .splineTo(new Vector2d(28, 5), Math.toRadians(225),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
+                    counterSpin = false;
                     depositCone = true;
                 })
-                .addDisplacementMarker(() -> {;
+                .addDisplacementMarker(() -> {
                     robot.followTrajectoryAsync(backAway1);
                 })
                 .build();
 
-        backAway1 = robot.trajectoryBuilder(preloadGoal0.end(), Math.toRadians(45))
-                .addDisplacementMarker(() -> {
-                })
+        backAway1 = robot.trajectoryBuilder(preloadGoal0.end())
                 .strafeTo(new Vector2d(34, 12),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -124,10 +122,10 @@ public class BlueSideRight extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 0;
                 })
-                .splineTo(new Vector2d(18, 16), Math.toRadians(300),
+                .splineTo(new Vector2d(18, 16), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineTo(new Vector2d(6, 28), Math.PI / 4,
+                .splineTo(new Vector2d(7, 29), Math.toRadians(225),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -142,18 +140,18 @@ public class BlueSideRight extends LinearOpMode
 
         park1X = robot.trajectoryBuilder(loopSetup2.end())
                 .strafeTo(new Vector2d(14,36))
-                .splineTo(new Vector2d(10,10), Math.toRadians(90),
+                .splineTo(new Vector2d(10,10), Math.toRadians(270),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         park2X = robot.trajectoryBuilder(loopSetup2.end())
-                .strafeTo(new Vector2d(15,37))
+                .strafeTo(new Vector2d(16,38))
                 .build();
 
         park3X = robot.trajectoryBuilder(loopSetup2.end())
                 .strafeTo(new Vector2d(12,34))
-                .splineTo(new Vector2d(12,60), Math.toRadians(270),
+                .splineTo(new Vector2d(12,60), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();

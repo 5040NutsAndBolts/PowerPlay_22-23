@@ -26,7 +26,7 @@ public class RedSideRight extends LinearOpMode
 
     boolean intakeCone, depositCone, counterSpin;
 
-    Trajectory preloadGoal0, backAway1, loopSetup2, park1X, park2X, park3X;
+    Trajectory preloadGoal0, backAway1, loopSetup2, stackIntake3, stackScore4, park1X, park2X, park3X;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -95,22 +95,20 @@ public class RedSideRight extends LinearOpMode
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 3;
-                    counterSpin = false;
                 })
-                .splineTo(new Vector2d(-26, -4), Math.PI / 4,
+                .splineTo(new Vector2d(-28, -5), Math.PI / 4,
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
+                    counterSpin = false;
                     depositCone = true;
                 })
-                .addDisplacementMarker(() -> {;
+                .addDisplacementMarker(() -> {
                     robot.followTrajectoryAsync(backAway1);
                 })
                 .build();
 
         backAway1 = robot.trajectoryBuilder(preloadGoal0.end(), Math.toRadians(45))
-                .addDisplacementMarker(() -> {
-                })
                 .strafeTo(new Vector2d(-34, -12),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -140,6 +138,8 @@ public class RedSideRight extends LinearOpMode
                 })
                 .build();
 
+
+
         park1X = robot.trajectoryBuilder(loopSetup2.end())
                 .strafeTo(new Vector2d(-14,-36))
                 .splineTo(new Vector2d(-10,-10), Math.toRadians(90),
@@ -148,7 +148,7 @@ public class RedSideRight extends LinearOpMode
                 .build();
 
         park2X = robot.trajectoryBuilder(loopSetup2.end())
-                .strafeTo(new Vector2d(-15,-37))
+                .strafeTo(new Vector2d(-14,-36))
                 .build();
 
         park3X = robot.trajectoryBuilder(loopSetup2.end())
