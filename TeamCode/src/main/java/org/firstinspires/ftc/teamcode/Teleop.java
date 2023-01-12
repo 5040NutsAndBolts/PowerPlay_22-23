@@ -169,7 +169,7 @@ public class Teleop extends LinearOpMode
                     robot.slideMotorA.setPower(-gamepad2.left_stick_y);
                     robot.slideMotorB.setPower(-gamepad2.left_stick_y);
                 }
-                else if(robot.slideMotorA.getCurrentPosition() > 100 && gamepad2.left_stick_y > 0)
+                else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
                 {
                     robot.slideMotorA.setPower(-gamepad2.left_stick_y * 0.50);
                     robot.slideMotorB.setPower(-gamepad2.left_stick_y * 0.50);
@@ -183,11 +183,11 @@ public class Teleop extends LinearOpMode
             else
                 robot.transfer();
 
-            /*if(robot.limitSwitch.getState())
+            if(robot.limitSwitch.getState())
             {
                 robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }*/
+            }
 
             telemetry.addData("Slow Mode", slowMode);
             telemetry.addData("Slowdown Override", slowdownOverride);
