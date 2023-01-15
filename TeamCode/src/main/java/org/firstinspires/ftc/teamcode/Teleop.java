@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends LinearOpMode
@@ -11,20 +16,34 @@ public class Teleop extends LinearOpMode
     public boolean slowMode = false;
     public double driveSpeed = 1;
     public double speedNerf;
+    public boolean slowdownOverride = false;
 
     public boolean b1Pressed = false;
+    public boolean a1Pressed = false;
     public boolean y2Pressed = false;
     public boolean bumper2Pressed = false;
+    public boolean slideReset = false;
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
-        robot.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //the motors need to be the opposite of what they should be in teleop for autos to work
+        //you should never reverse motors here unless you really have to
+        robot.frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addLine("init done");
         telemetry.update();
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
         waitForStart();
 
@@ -64,7 +83,29 @@ public class Teleop extends LinearOpMode
             else
                 driveSpeed = 1;
 
-            speedNerf = ((6000 - robot.slideMotor.getCurrentPosition()) / 7000.0) + .15;
+            //slowdown override
+            if(gamepad1.a && !a1Pressed)
+            {
+                slowdownOverride = !slowdownOverride;
+                a1Pressed = true;
+            }
+            else if (!gamepad1.a)
+                a1Pressed = false;
+
+            //slows down the drivetrain when the slides are up
+            if(!slowdownOverride)
+            {
+                if(robot.slideMotorA.getCurrentPosition() <= 900)
+                    speedNerf = 1.0;
+                else if(robot.slideMotorA.getCurrentPosition() <= 1700)
+                    speedNerf = ((2600 - robot.slideMotorA.getCurrentPosition()) / 3200.0) + 0.47;
+                else if(robot.slideMotorA.getCurrentPosition() <= 2400)
+                    speedNerf = ((3300 - robot.slideMotorA.getCurrentPosition()) / 2000.0) - 0.05;
+                else
+                    speedNerf = ((3000 - robot.slideMotorA.getCurrentPosition()) / 2000.0) + 0.1;
+            }
+            else
+                speedNerf = 1;
 
             //wheel intake portion
            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
@@ -120,27 +161,48 @@ public class Teleop extends LinearOpMode
             //transfer mech calls
             if (robot.transferOverride)
             {
-                robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if slides are changed these lines might cause problems
-                if(robot.slideMotor.getCurrentPosition() < 6000 && gamepad2.left_stick_y < 0)
-                  robot.slideMotor.setPower(-gamepad2.left_stick_y);
-                else if(robot.slideMotor.getCurrentPosition() > 50 && gamepad2.left_stick_y > 0)
-                    robot.slideMotor.setPower(-gamepad2.left_stick_y);
+                if(robot.slideMotorA.getCurrentPosition() < 2800 && gamepad2.left_stick_y < 0)
+                {
+                    robot.slideMotorA.setPower(-gamepad2.left_stick_y);
+                    robot.slideMotorB.setPower(-gamepad2.left_stick_y);
+                }
+                else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
+                {
+                    robot.slideMotorA.setPower(-gamepad2.left_stick_y * 0.50);
+                    robot.slideMotorB.setPower(-gamepad2.left_stick_y * 0.50);
+                }
                 else
-                    robot.slideMotor.setPower(0);
+                {
+                    robot.slideMotorA.setPower(0);
+                    robot.slideMotorB.setPower(0);
+                }
             }
             else
                 robot.transfer();
 
+            if(robot.limitSwitch.getState())
+            {
+                robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+
             telemetry.addData("Slow Mode", slowMode);
+            telemetry.addData("Slowdown Override", slowdownOverride);
+            telemetry.addData("Slow Down", speedNerf);
             telemetry.addData("Robot Drive", rDrive);
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
-            telemetry.addData("Slide Position", robot.slideMotor.getCurrentPosition());
-            telemetry.addData("Slow Down", speedNerf);
+            telemetry.addData("Slide Position", robot.slideMotorA.getCurrentPosition());
+            telemetry.addData("Limit Switch", robot.limitSwitch.getState());
+            telemetry.addData("Motor A Power", robot.slideMotorA.getPower());
+            telemetry.addData("Motor B Power", robot.slideMotorB.getPower());
+            telemetry.addData("A current", robot.slideMotorA.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("A velocity", robot.slideMotorA.getVelocity());
             telemetry.update();
         }
     }

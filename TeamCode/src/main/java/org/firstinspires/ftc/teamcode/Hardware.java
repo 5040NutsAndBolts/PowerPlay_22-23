@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -7,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -17,19 +20,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import static java.lang.Math.abs;
 
-public class Hardware {
+import java.util.ArrayList;
+import java.util.List;
+
+//class header, MechanumDrive extend is needed for RoadRunner
+public class Hardware extends MecanumDrive
+{
     //drive motor declaration
     public DcMotorEx frontLeft;
     public DcMotorEx frontRight;
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
 
-    public DcMotorEx slideMotor;
+    public DcMotorEx slideMotorA;
+    public DcMotorEx slideMotorB;
     public CRServo lWheel;
     public CRServo rWheel;
 
     public BNO055IMU imu;
     public double adjust;
+
+    public DigitalChannel limitSwitch;
 
     //tracking variables
     public int transferLevel = 0;
@@ -39,16 +50,30 @@ public class Hardware {
     public double x = 0, y = 0, theta = 0;
     public static LinearOpMode currentOpMode;
 
+    public DcMotorEx leftOdom, rightOdom, centerOdom;
+
+    // Real world distance traveled by the wheels
+    public double leftOdomTraveled, rightOdomTraveled, centerOdomTraveled;
+
+    // Odometry encoder positions
+    public int leftEncoderPos, centerEncoderPos, rightEncoderPos;
+
+    public static final double ODOM_TICKS_PER_IN = 1945.083708;
+    public static double trackwidth = 10.56198075;
+
     //constructor method
     public Hardware(HardwareMap hardwareMap)
     {
+        super(0.0199,0.0055,0.0,10.56198075, 11.97, 1);
+
         //drive motor initialization
         frontLeft = hardwareMap.get(DcMotorEx.class, "Front Left");
         frontRight = hardwareMap.get(DcMotorEx.class, "Front Right");
         backLeft = hardwareMap.get(DcMotorEx.class, "Back Left");
         backRight = hardwareMap.get(DcMotorEx.class, "Back Right");
 
-        slideMotor = hardwareMap.get(DcMotorEx.class, "Slide Motor");
+        slideMotorA = hardwareMap.get(DcMotorEx.class, "Slide Motor A");
+        slideMotorB = hardwareMap.get(DcMotorEx.class, "Slide Motor B");
 
         lWheel = hardwareMap.crservo.get("Left Wheel");
         rWheel = hardwareMap.crservo.get("Right Wheel");
@@ -58,17 +83,25 @@ public class Hardware {
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideMotorA.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //gyro setup
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+
+        limitSwitch = hardwareMap.get(DigitalChannel.class, "Limit Switch");
+
+        //odom
+        leftOdom = hardwareMap.get(DcMotorEx.class, "Front Left");
+        rightOdom = hardwareMap.get(DcMotorEx.class, "Front Right");
+        centerOdom = hardwareMap.get(DcMotorEx.class, "Back Right");
     }
 
     //robot-oriented drive method
@@ -116,64 +149,143 @@ public class Hardware {
     //method to run slides
     public void transfer()
     {
+        if(slideMotorA.getVelocity() > 400)
+            slideMotorB.setPower(1);
+        else if(slideMotorA.getVelocity() < -400)
+            slideMotorB.setPower(-1);
+        else
+            slideMotorB.setPower(0);
+
         if ((transferLevel == 0))
         {
-            if (slideMotor.getCurrentPosition() < 100)
+            if (slideMotorA.getCurrentPosition() < 100)
             {
-                slideMotor.setTargetPosition(0);
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                slideMotorA.setTargetPosition(0);
+                slideMotorA.setPower(0);
+                slideMotorB.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT)
+                {
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                }
             }
             else
             {
-                slideMotor.setTargetPosition(0);
-                slideMotor.setPower(1);
+                slideMotorA.setTargetPosition(0);
+                slideMotorA.setPower(1);
             }
         }
         else if (transferLevel == 1)
         {
-            if (slideMotor.getCurrentPosition() < 1950 || slideMotor.getCurrentPosition() > 2050)
+            if (slideMotorA.getCurrentPosition() < 850 || slideMotorA.getCurrentPosition() > 950)
             {
-                slideMotor.setTargetPosition(2000);
-                slideMotor.setPower(1);
+                slideMotorA.setTargetPosition(900);
+                slideMotorA.setPower(1);
             }
             else
             {
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                {
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
             }
         }
         else if (transferLevel == 2)
         {
-            if (slideMotor.getCurrentPosition() < 3450 || slideMotor.getCurrentPosition() > 3550)
+            if (slideMotorA.getCurrentPosition() < 1650 || slideMotorA.getCurrentPosition() > 1750)
             {
-                slideMotor.setPower(1);
-                slideMotor.setTargetPosition(3500);
+                slideMotorA.setPower(1);
+                slideMotorA.setTargetPosition(1700);
             }
             else
             {
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                {
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
             }
         }
         else
         {
-            if (slideMotor.getCurrentPosition() > 4700)
+            if (slideMotorA.getCurrentPosition() > 2400)
             {
-                slideMotor.setTargetPosition(4750);
-                slideMotor.setPower(0);
-                if (slideMotor.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
-                    slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                slideMotorA.setTargetPosition(2450);
+                slideMotorA.setPower(0);
+                if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
+                {
+                    slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                }
             }
             else
             {
-                slideMotor.setTargetPosition(4750);
-                slideMotor.setPower(1);
+                slideMotorA.setTargetPosition(2450);
+                slideMotorA.setPower(1);
             }
         }
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotorA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    //auto method for intaking and depositing
+    public void depositCone()
+    {
+        ElapsedTime t = new ElapsedTime();
+        t.startTime();
+
+        while(t.seconds() < 0.5)
+        {
+            rWheel.setPower(1);
+            lWheel.setPower(-1);
+        }
+        rWheel.setPower(0);
+        lWheel.setPower(0);
+    }
+
+    public void intakeCone()
+    {
+        ElapsedTime t = new ElapsedTime();
+        t.startTime();
+
+        while(t.seconds() < 0.5)
+        {
+            rWheel.setPower(-1);
+            lWheel.setPower(1);
+        }
+        rWheel.setPower(0);
+        lWheel.setPower(0);
+    }
+
+    public void runCounterSpin(boolean spin)
+    {
+        if(spin)
+        {
+            rWheel.setPower(-0.1);
+            lWheel.setPower(0.1);
+        }
+    }
+
+    //all methods below this have to be here to avoid errors and should be ignored
+    @Override
+    public void setMotorPowers(double v, double v1, double v2, double v3)
+    {
+        frontLeft.setPower(v);
+        backLeft.setPower(v1);
+        backRight.setPower(v2);
+        frontRight.setPower(v3);
+    }
+
+    @Override
+    public List<Double> getWheelPositions() {
+        List<Double> wheelPositions = new ArrayList<>();
+        return wheelPositions;
+    }
+
+    @Override
+    public double getRawExternalHeading() {
+        return imu.getAngularOrientation().firstAngle;
     }
 }
