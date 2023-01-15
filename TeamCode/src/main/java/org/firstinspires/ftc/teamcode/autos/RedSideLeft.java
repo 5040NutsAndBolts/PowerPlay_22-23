@@ -125,6 +125,9 @@ public class RedSideLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 1;
                 })
+                .splineTo(new Vector2d(-14, 40), Math.toRadians(90),
+                        RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineToSplineHeading(new Pose2d(-11, 59, Math.toRadians(90)), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -135,7 +138,7 @@ public class RedSideLeft extends LinearOpMode
                 .build();
 
         stackIntake5 = robot.trajectoryBuilder(stackLineup4.end())
-                .lineTo(new Vector2d(-11, 60))
+                .lineTo(new Vector2d(-11, 61))
                 .addDisplacementMarker(() -> {
                     robot.intakeCone();
                     counterSpin = true;
@@ -145,7 +148,7 @@ public class RedSideLeft extends LinearOpMode
                 .build();
 
         stackAway6 = robot.trajectoryBuilder(stackIntake5.end())
-                .strafeTo(new Vector2d(-11, 8),
+                .strafeTo(new Vector2d(-12, 8),
                         RoadRunner.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -167,13 +170,13 @@ public class RedSideLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     if(autoNumber == 3)
                     {
-                        if(matchTime.seconds() < 22)
+                        if(matchTime.seconds() < 16)
                             robot.followTrajectoryAsync(lineUp3);
                         else
                             robot.followTrajectoryAsync(park3X);
                     }
                     else
-                      if(matchTime.seconds() < 17)
+                      if(matchTime.seconds() < 18)
                           robot.followTrajectoryAsync(lineUp3);
                       else
                       {
@@ -209,7 +212,7 @@ public class RedSideLeft extends LinearOpMode
                 .build();
 
         park3X = robot.trajectoryBuilder(stackScore7.end())
-                .strafeTo(new Vector2d(-12,9))
+                .strafeTo(new Vector2d(-13,9))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 0;
                 })
