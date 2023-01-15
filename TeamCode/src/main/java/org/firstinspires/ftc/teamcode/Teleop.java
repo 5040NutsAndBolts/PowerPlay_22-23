@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp(name = "Teleop", group = "Teleop")
 public class Teleop extends LinearOpMode
@@ -10,20 +16,35 @@ public class Teleop extends LinearOpMode
     public boolean rDrive = true;
     public boolean slowMode = false;
     public double driveSpeed = 1;
+    public double speedNerf;
+    public boolean slowdownOverride = false;
 
     public boolean b1Pressed = false;
+    public boolean a1Pressed = false;
     public boolean y2Pressed = false;
     public boolean bumper2Pressed = false;
+    public boolean slideReset = false;
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         //initializes robot object
         Hardware robot = new Hardware(hardwareMap);
-        robot.transferSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        //the motors need to be the opposite of what they should be in teleop for autos to work
+        //you should never reverse motors here unless you really have to
+        robot.frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addLine("init done");
         telemetry.update();
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
         waitForStart();
 
@@ -32,11 +53,16 @@ public class Teleop extends LinearOpMode
         {
             //robot oriented drive method call
             if (rDrive)
-                robot.robotODrive(gamepad1.left_stick_y * driveSpeed, gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed);
+                robot.robotODrive(gamepad1.left_stick_y * driveSpeed * speedNerf,
+                        gamepad1.left_stick_x * driveSpeed * speedNerf,
+                        gamepad1.right_stick_x * driveSpeed * speedNerf);
 
             //field oriented drive method call
             if (!rDrive)
-                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed, -gamepad1.left_stick_x * driveSpeed, gamepad1.right_stick_x * driveSpeed, gamepad1.right_stick_button);
+                robot.fieldODrive(gamepad1.left_stick_y * driveSpeed * speedNerf,
+                        -gamepad1.left_stick_x * driveSpeed * speedNerf,
+                        gamepad1.right_stick_x * driveSpeed * speedNerf,
+                        gamepad1.right_stick_button);
 
             //drive mode toggles
             if (gamepad1.right_bumper)
@@ -49,7 +75,8 @@ public class Teleop extends LinearOpMode
             {
                 slowMode = !slowMode;
                 b1Pressed = true;
-            } else if (!gamepad1.b)
+            }
+            else if (!gamepad1.b)
                 b1Pressed = false;
 
             if (slowMode)
@@ -57,31 +84,59 @@ public class Teleop extends LinearOpMode
             else
                 driveSpeed = 1;
 
-            //wheel intake portion
-            //all four if(robot.intakeMotor.getCurrentPosition() < 1000) lines need to be set with
-            // positions from telemetry and uncommented so the claw can't run to far, similar to how
-            // the slides work in manual control
-            if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
+            //slowdown override
+            if(gamepad1.a && !a1Pressed)
             {
-                if(gamepad2.right_trigger == 0) //intake opening
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(-gamepad2.left_trigger);
-                else //intake closing
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(gamepad2.right_trigger);
+                slowdownOverride = !slowdownOverride;
+                a1Pressed = true;
+            }
+            else if (!gamepad1.a)
+                a1Pressed = false;
+
+            //slows down the drivetrain when the slides are up
+            if(!slowdownOverride)
+            {
+                if(robot.slideMotorA.getCurrentPosition() <= 900)
+                    speedNerf = 1.0;
+                else if(robot.slideMotorA.getCurrentPosition() <= 1700)
+                    speedNerf = ((2600 - robot.slideMotorA.getCurrentPosition()) / 3200.0) + 0.47;
+                else if(robot.slideMotorA.getCurrentPosition() <= 2400)
+                    speedNerf = ((3300 - robot.slideMotorA.getCurrentPosition()) / 2000.0) - 0.05;
+                else
+                    speedNerf = ((3000 - robot.slideMotorA.getCurrentPosition()) / 2000.0) + 0.1;
             }
             else
+                speedNerf = 1;
+
+            //wheel intake portion
+           if(gamepad1.right_trigger == 0 && gamepad1.left_trigger == 0)
+            {
+                if(gamepad2.right_trigger == 0) //intake opening
+                {
+                    robot.lWheel.setPower(-gamepad2.left_trigger);
+                    robot.rWheel.setPower(gamepad2.left_trigger);
+                }
+                else //intake closing
+                {
+                    robot.lWheel.setPower(gamepad2.right_trigger);
+                    robot.rWheel.setPower(-gamepad2.right_trigger);
+                }
+            }
+           else
             {
                 if(gamepad1.right_trigger == 0) //bottom driver intake opening
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(-gamepad1.left_trigger);
+                {
+                    robot.lWheel.setPower(-gamepad1.left_trigger);
+                    robot.rWheel.setPower(gamepad1.left_trigger);
+                }
                 else //bottom driving intake closing
-                    //if(robot.intakeMotor.getCurrentPosition() < 1000)
-                        robot.intakeMotor.setPower(gamepad1.right_trigger);
+                {
+                    robot.lWheel.setPower(gamepad1.right_trigger);
+                    robot.rWheel.setPower(-gamepad1.right_trigger);
+                }
             }
 
             //sets transfer override
-            //comment this out if the slides get restrung
             if(gamepad2.y && !y2Pressed)
             {
                 robot.transferOverride = !robot.transferOverride;
@@ -107,26 +162,48 @@ public class Teleop extends LinearOpMode
             //transfer mech calls
             if (robot.transferOverride)
             {
-                robot.transferSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //keeps slides from moving to far to prevent damage
                 //if slides are changed these lines might cause problems
-                if(robot.transferSlide.getCurrentPosition() < 7800 && gamepad2.left_stick_y < 0)
-                  robot.transferSlide.setPower(-gamepad2.left_stick_y);
-                else if(robot.transferSlide.getCurrentPosition() > 200 && gamepad2.left_stick_y > 0)
-                    robot.transferSlide.setPower(-gamepad2.left_stick_y);
+                if(robot.slideMotorA.getCurrentPosition() < 2800 && gamepad2.left_stick_y < 0)
+                {
+                    robot.slideMotorA.setPower(-gamepad2.left_stick_y);
+                    robot.slideMotorB.setPower(-gamepad2.left_stick_y);
+                }
+                else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
+                {
+                    robot.slideMotorA.setPower(-gamepad2.left_stick_y * 0.50);
+                    robot.slideMotorB.setPower(-gamepad2.left_stick_y * 0.50);
+                }
                 else
-                    robot.transferSlide.setPower(0);
+                {
+                    robot.slideMotorA.setPower(0);
+                    robot.slideMotorB.setPower(0);
+                }
             }
             else
                 robot.transfer();
 
+            if(robot.limitSwitch.getState())
+            {
+                robot.slideMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+
             telemetry.addData("Slow Mode", slowMode);
+            telemetry.addData("Slowdown Override", slowdownOverride);
+            telemetry.addData("Slow Down", speedNerf);
             telemetry.addData("Robot Drive", rDrive);
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
             telemetry.addLine();
-            telemetry.addData("Claw Position", robot.intakeMotor.getCurrentPosition());
+            telemetry.addData("Slide Position", robot.slideMotorA.getCurrentPosition());
+            telemetry.addData("Limit Switch", robot.limitSwitch.getState());
+            telemetry.addData("Motor A Power", robot.slideMotorA.getPower());
+            telemetry.addData("Motor B Power", robot.slideMotorB.getPower());
+            telemetry.addData("A current", robot.slideMotorA.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("A velocity", robot.slideMotorA.getVelocity());
             telemetry.update();
         }
     }
