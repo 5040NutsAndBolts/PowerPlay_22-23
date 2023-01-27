@@ -264,8 +264,8 @@ public class Hardware extends MecanumDrive
     {
         if(spin)
         {
-            rWheel.setPower(-0.1);
-            lWheel.setPower(0.1);
+            rWheel.setPower(-0.15);
+            lWheel.setPower(0.15);
         }
     }
 

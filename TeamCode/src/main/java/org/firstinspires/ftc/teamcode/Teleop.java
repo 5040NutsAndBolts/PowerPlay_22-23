@@ -18,12 +18,12 @@ public class Teleop extends LinearOpMode
     public double driveSpeed = 1;
     public double speedNerf;
     public boolean slowdownOverride = false;
+    public boolean cruiseControl = false;
 
     public boolean b1Pressed = false;
     public boolean a1Pressed = false;
     public boolean y2Pressed = false;
     public boolean bumper2Pressed = false;
-    public boolean slideReset = false;
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -97,13 +97,13 @@ public class Teleop extends LinearOpMode
             if(!slowdownOverride)
             {
                 if(robot.slideMotorA.getCurrentPosition() <= 900)
-                    speedNerf = 1.0;
+                    speedNerf = ((1000 - robot.slideMotorA.getCurrentPosition()) / 3500.0) + .715;
                 else if(robot.slideMotorA.getCurrentPosition() <= 1700)
-                    speedNerf = ((2600 - robot.slideMotorA.getCurrentPosition()) / 3200.0) + 0.47;
+                    speedNerf = ((1800 - robot.slideMotorA.getCurrentPosition()) / 2500.0) + 0.39;
                 else if(robot.slideMotorA.getCurrentPosition() <= 2400)
-                    speedNerf = ((3300 - robot.slideMotorA.getCurrentPosition()) / 2000.0) - 0.05;
+                    speedNerf = ((2500 - robot.slideMotorA.getCurrentPosition()) / 3500.0) + 0.17;
                 else
-                    speedNerf = ((3000 - robot.slideMotorA.getCurrentPosition()) / 2000.0) + 0.1;
+                    speedNerf = ((2700 - robot.slideMotorA.getCurrentPosition()) / 3600.0) + 0.12;
             }
             else
                 speedNerf = 1;
@@ -159,26 +159,53 @@ public class Teleop extends LinearOpMode
             else if(!gamepad2.left_bumper && !gamepad2.right_bumper)
                 bumper2Pressed = false;
 
+            if(gamepad2.b)
+                cruiseControl = true;
+            if(gamepad2.left_stick_y != 0)
+                cruiseControl = false;
+
             //transfer mech calls
             if (robot.transferOverride)
             {
-                //robot.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                //keeps slides from moving to far to prevent damage
-                //if slides are changed these lines might cause problems
-                if(robot.slideMotorA.getCurrentPosition() < 2800 && gamepad2.left_stick_y < 0)
+                if(!cruiseControl)
                 {
-                    robot.slideMotorA.setPower(-gamepad2.left_stick_y);
-                    robot.slideMotorB.setPower(-gamepad2.left_stick_y);
-                }
-                else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
-                {
-                    robot.slideMotorA.setPower(-gamepad2.left_stick_y * 0.50);
-                    robot.slideMotorB.setPower(-gamepad2.left_stick_y * 0.50);
+                    robot.slideMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    robot.slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+                    //keeps slides from moving to far to prevent damage
+                    if(robot.slideMotorA.getCurrentPosition() < 2600 && gamepad2.left_stick_y < 0)
+                    {
+                        robot.slideMotorA.setPower(-gamepad2.left_stick_y);
+                        robot.slideMotorB.setPower(-gamepad2.left_stick_y);
+                    }
+                    else if(!robot.limitSwitch.getState() && gamepad2.left_stick_y > 0)
+                    {
+                        robot.slideMotorA.setPower(-gamepad2.left_stick_y * 0.50);
+                        robot.slideMotorB.setPower(-gamepad2.left_stick_y * 0.50);
+                    }
+                    else
+                    {
+                        robot.slideMotorA.setPower(0);
+                        robot.slideMotorB.setPower(0);
+                    }
                 }
                 else
                 {
-                    robot.slideMotorA.setPower(0);
                     robot.slideMotorB.setPower(0);
+                    if(Math.abs(robot.slideMotorA.getCurrentPosition() - 650) > 75)
+                    {
+                        robot.slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+                        robot.slideMotorA.setTargetPosition(600);
+                        robot.slideMotorA.setPower(1);
+                    }
+                    else
+                    {
+                        robot.slideMotorA.setPower(0);
+                        robot.slideMotorA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        robot.slideMotorB.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    }
+
+                    robot.slideMotorA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
             }
             else
@@ -197,13 +224,10 @@ public class Teleop extends LinearOpMode
             telemetry.addLine();
             telemetry.addData("Transfer Level", robot.transferLevel);
             telemetry.addData("Transfer Override", robot.transferOverride);
+            telemetry.addData("Slides Resting Position", cruiseControl);
             telemetry.addLine();
             telemetry.addData("Slide Position", robot.slideMotorA.getCurrentPosition());
             telemetry.addData("Limit Switch", robot.limitSwitch.getState());
-            telemetry.addData("Motor A Power", robot.slideMotorA.getPower());
-            telemetry.addData("Motor B Power", robot.slideMotorB.getPower());
-            telemetry.addData("A current", robot.slideMotorA.getCurrent(CurrentUnit.AMPS));
-            telemetry.addData("A velocity", robot.slideMotorA.getVelocity());
             telemetry.update();
         }
     }
