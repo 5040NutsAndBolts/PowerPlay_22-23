@@ -16,8 +16,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "Signal Auto", group = "Autonomous")
-public class SignalAuto extends LinearOpMode
+@Autonomous (name = "Red Right Time", group = "Autonomous")
+public class RedRightTime extends LinearOpMode
 {
     int autoNumber = 1;
 
@@ -87,31 +87,36 @@ public class SignalAuto extends LinearOpMode
             //orange signal image, left park zone
             if(autoNumber == 1)
             {
-                while(timer.seconds() < 1.35 && opModeIsActive())
-                    robot.robotODrive(0,-.5,0);
+                //lines up to park
+                while(timer.seconds() < 1.75 && opModeIsActive())
+                    robot.robotODrive(0,.5,0);
+                //parks
+                while (timer.seconds() < 3 && opModeIsActive())
+                    robot.robotODrive(0.5,0,0);
 
-                while (timer.seconds() < 2.5 && opModeIsActive())
-                    robot.robotODrive(-.5,0,0);
             }
 
             //green signal image, middle park zone
             else if(autoNumber == 2)
             {
-                //Robot now just drives forward and parks
-                while (timer.seconds() < .2 && opModeIsActive())
-                    robot.robotODrive(0,-.5,0);
-                while (timer.seconds() < 1.7 && opModeIsActive())
-                    robot.robotODrive(-.5,0,0);
+                //lines up to park
+                while (timer.seconds() < .5 && opModeIsActive())
+                    robot.robotODrive(0,.5,0);
+                //parks
+                while (timer.seconds() < 2 && opModeIsActive())
+                    robot.robotODrive(0.5,0,0);
+
             }
 
             //purple signal image, right park zone
             else
             {
-                while(timer.seconds() < 1.35 && opModeIsActive())
-                    robot.robotODrive(0,.5,0);
-
+                //lines up to park
+                while(timer.seconds() < 1.25 && opModeIsActive())
+                    robot.robotODrive(0,-.5,0);
+                //parks
                 while (timer.seconds() < 2.75 && opModeIsActive())
-                    robot.robotODrive(-.5,0,0);
+                    robot.robotODrive(.5,0,0);
             }
 
             robot.robotODrive(0,0,0);
