@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.autos.oldautos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -81,12 +81,12 @@ public class SignalAuto extends LinearOpMode
             robot.slideMotorA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slideMotorA.setPower(.5);
 
+            //conter spins the intake to keep cone in place
+            robot.runCounterSpin(true);
+
             //orange signal image, left park zone
             if(autoNumber == 1)
             {
-                robot.lWheel.setPower(.25);
-                robot.rWheel.setPower(-.25);
-
                 while(timer.seconds() < 1.35 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
 
@@ -97,9 +97,6 @@ public class SignalAuto extends LinearOpMode
             //green signal image, middle park zone
             else if(autoNumber == 2)
             {
-                robot.lWheel.setPower(.25);
-                robot.rWheel.setPower(-.25);
-
                 //Robot now just drives forward and parks
                 while (timer.seconds() < .2 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
@@ -110,18 +107,12 @@ public class SignalAuto extends LinearOpMode
             //purple signal image, right park zone
             else
             {
-                robot.lWheel.setPower(.25);
-                robot.rWheel.setPower(-.25);
-
                 while(timer.seconds() < 1.35 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
 
                 while (timer.seconds() < 2.75 && opModeIsActive())
                     robot.robotODrive(-.5,0,0);
             }
-
-            robot.lWheel.setPower(0);
-            robot.rWheel.setPower(0);
 
             robot.robotODrive(0,0,0);
         }

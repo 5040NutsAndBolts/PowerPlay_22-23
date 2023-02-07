@@ -58,13 +58,21 @@ public class Hardware extends MecanumDrive
     // Odometry encoder positions
     public int leftEncoderPos, centerEncoderPos, rightEncoderPos;
 
-    public static final double ODOM_TICKS_PER_IN = 1945.083708;
-    public static double trackwidth = 10.56198075;
+    //used in our odo but not RoadRunner classes
+    public static final double ODOM_TICKS_PER_IN = 1831.471685;
+    public static double trackwidth = 10.976;
+
+    //failsafe stuff
+    public boolean set = false;
+    public boolean ready = false;
+    public int[] leftReadings = new int[3];
+    public int[] rightReadings = new int[3];
+    public int[] centerReadings = new int[3];
 
     //constructor method
     public Hardware(HardwareMap hardwareMap)
     {
-        super(0.0199,0.0055,0.0,10.56198075, 11.97, 1);
+        super(0.0185,0.005,0.0,10.976, 12.57, 1.017);
 
         //drive motor initialization
         frontLeft = hardwareMap.get(DcMotorEx.class, "Front Left");
@@ -178,9 +186,9 @@ public class Hardware extends MecanumDrive
         else if (transferLevel == 1)
         {
 
-            if (slideMotorA.getCurrentPosition() < 850 || slideMotorA.getCurrentPosition() > 950)
+            if (slideMotorA.getCurrentPosition() < 1050 || slideMotorA.getCurrentPosition() > 1150)
             {
-                slideMotorA.setTargetPosition(900);
+                slideMotorA.setTargetPosition(1100);
                 slideMotorA.setPower(1);
             }
             else
@@ -212,9 +220,9 @@ public class Hardware extends MecanumDrive
         }
         else
         {
-            if (slideMotorA.getCurrentPosition() > 2400)
+            if (slideMotorA.getCurrentPosition() > 2500)
             {
-                slideMotorA.setTargetPosition(2450);
+                slideMotorA.setTargetPosition(2550);
                 slideMotorA.setPower(0);
                 if (slideMotorA.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE)
                 {
@@ -224,7 +232,7 @@ public class Hardware extends MecanumDrive
             }
             else
             {
-                slideMotorA.setTargetPosition(2450);
+                slideMotorA.setTargetPosition(2550);
                 slideMotorA.setPower(1);
             }
         }
@@ -267,6 +275,51 @@ public class Hardware extends MecanumDrive
             rWheel.setPower(-0.15);
             lWheel.setPower(0.15);
         }
+    }
+
+    public boolean failSafe(ElapsedTime matchTime)
+    {
+        if(matchTime.seconds() % 3 < .1 && matchTime.seconds() > .5)
+        {
+            leftReadings[2] = leftOdom.getCurrentPosition();
+            rightReadings[2] = rightOdom.getCurrentPosition();
+            centerReadings[2] = centerOdom.getCurrentPosition();
+
+            ready = true;
+        }
+        else if(matchTime.seconds() % 1 < .1 && !set)
+        {
+            leftReadings[0] = leftOdom.getCurrentPosition();
+            rightReadings[0] = rightOdom.getCurrentPosition();
+            centerReadings[0] = centerOdom.getCurrentPosition();
+
+            set = true;
+        }
+        else if(matchTime.seconds() % 1 < .1 && set)
+        {
+            leftReadings[1] = leftOdom.getCurrentPosition();
+            rightReadings[1] = rightOdom.getCurrentPosition();
+            centerReadings[1] = centerOdom.getCurrentPosition();
+        }
+
+        if(ready)
+        {
+            if(Math.abs(leftReadings[0] - leftReadings[1]) < 50 &&
+                    Math.abs(leftReadings[1] - leftReadings[2]) < 50)
+            {
+                return true;
+            }
+            if(Math.abs(rightReadings[0] - rightReadings[1]) < 50 &&
+                    Math.abs(rightReadings[1] - rightReadings[2]) < 50)
+            {
+                return true;
+            }
+
+            ready = false;
+            set = false;
+        }
+
+        return false;
     }
 
     //all methods below this have to be here to avoid errors and should be ignored

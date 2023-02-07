@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.Odometry;
+import org.firstinspires.ftc.teamcode.roadrunnerquickstart.drive.util.Encoder;
 
 @TeleOp(name = "OdomTest",group="teleop")
 public class OdomTest extends LinearOpMode
@@ -18,10 +20,16 @@ public class OdomTest extends LinearOpMode
         waitForStart();
         robot.softBrake();
         robot.resetOdometry(0,0,0);
+
+        robot.frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        robot.frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
         while(opModeIsActive())
         {
             robot.updatePositionRoadRunner();
-            robot.robotODrive(gamepad1.left_stick_y,gamepad1.left_stick_x,gamepad1.right_stick_x);
+            robot.robotODrive(0, 0, gamepad1.right_stick_x);
             telemetry.addData("left", robot.leftEncoderPos);
             telemetry.addData("right", robot.rightEncoderPos);
             telemetry.addData("center", robot.centerEncoderPos);
