@@ -105,8 +105,8 @@ public class RedLeftTime extends LinearOpMode
                 while (timer.seconds() < 3.5 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
 
-                while (timer.seconds() < 5 && opModeIsActive())
-                    robot.robotODrive(.5,0,0);
+                while (timer.seconds() < 4.5 && opModeIsActive())
+                    robot.robotODrive(.5,0,-.075);
             }
 
             //purple signal image, right park zone
