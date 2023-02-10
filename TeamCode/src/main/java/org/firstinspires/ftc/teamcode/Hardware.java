@@ -186,9 +186,9 @@ public class Hardware extends MecanumDrive
         else if (transferLevel == 1)
         {
 
-            if (slideMotorA.getCurrentPosition() < 1050 || slideMotorA.getCurrentPosition() > 1150)
+            if (slideMotorA.getCurrentPosition() < 1100 || slideMotorA.getCurrentPosition() > 1200)
             {
-                slideMotorA.setTargetPosition(1100);
+                slideMotorA.setTargetPosition(1150);
                 slideMotorA.setPower(1);
             }
             else

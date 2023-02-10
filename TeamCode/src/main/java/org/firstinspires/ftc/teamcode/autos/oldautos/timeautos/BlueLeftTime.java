@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autos.oldautos;
+package org.firstinspires.ftc.teamcode.autos.oldautos.timeautos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,8 +16,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous (name = "Red Right Time", group = "Autonomous")
-public class RedRightTime extends LinearOpMode
+@Autonomous (name = "Blue Left Time", group = "Autonomous")
+public class BlueLeftTime extends LinearOpMode
 {
     int autoNumber = 1;
 
@@ -88,10 +88,10 @@ public class RedRightTime extends LinearOpMode
             if(autoNumber == 1)
             {
                 //lines up to park
-                while(timer.seconds() < 1.75 && opModeIsActive())
+                while(timer.seconds() < 2 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
                 //parks
-                while (timer.seconds() < 3 && opModeIsActive())
+                while (timer.seconds() < 3.5 && opModeIsActive())
                     robot.robotODrive(0.5,0,0);
 
             }
@@ -117,6 +117,7 @@ public class RedRightTime extends LinearOpMode
                 //parks
                 while (timer.seconds() < 2.75 && opModeIsActive())
                     robot.robotODrive(.5,0,0);
+
             }
 
             robot.robotODrive(0,0,0);
