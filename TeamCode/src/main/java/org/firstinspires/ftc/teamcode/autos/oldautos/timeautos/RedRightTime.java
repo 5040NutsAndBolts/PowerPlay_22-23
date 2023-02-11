@@ -15,8 +15,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-
-@Autonomous (name = "Time Auto Anywhere", group = "Autonomous")
+//correct
+@Autonomous (name = "Red Right Time", group = "Autonomous")
 public class RedRightTime extends LinearOpMode
 {
     int autoNumber = 1;
