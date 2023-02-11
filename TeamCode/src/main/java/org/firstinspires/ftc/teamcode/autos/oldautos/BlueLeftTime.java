@@ -15,7 +15,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-
+//correct
 @Autonomous (name = "Blue Left Time", group = "Autonomous")
 public class BlueLeftTime extends LinearOpMode
 {
