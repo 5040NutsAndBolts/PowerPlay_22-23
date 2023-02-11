@@ -85,7 +85,7 @@ public class Teleop extends LinearOpMode
                 driveSpeed = 1;
 
             //slowdown override
-            if(gamepad1.a && !a1Pressed)
+            if(gamepad1.a && !a1Pressed && !gamepad1.start)
             {
                 slowdownOverride = !slowdownOverride;
                 a1Pressed = true;
@@ -159,7 +159,7 @@ public class Teleop extends LinearOpMode
             else if(!gamepad2.left_bumper && !gamepad2.right_bumper)
                 bumper2Pressed = false;
 
-            if(gamepad2.b)
+            if(gamepad2.b && !gamepad2.start)
                 cruiseControl = true;
             if(gamepad2.left_stick_y != 0)
                 cruiseControl = false;

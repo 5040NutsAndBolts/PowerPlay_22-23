@@ -172,7 +172,7 @@ public class BetterBlueSideLeft extends LinearOpMode
                 .splineToSplineHeading(new Pose2d(12, -40, Math.toRadians(270)), Math.toRadians(270),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineToSplineHeading(new Pose2d(10, -61, Math.toRadians(270)), Math.toRadians(270),
+                .splineToSplineHeading(new Pose2d(9, -61, Math.toRadians(270)), Math.toRadians(270),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -182,7 +182,7 @@ public class BetterBlueSideLeft extends LinearOpMode
                 .build();
 
         stackIntake8 = robot.trajectoryBuilder(lineUp7.end())
-                .lineTo(new Vector2d(10, -63))
+                .lineTo(new Vector2d(9, -63))
                 .addDisplacementMarker(() -> {
                     robot.intakeCone();
                     counterSpin = true;
@@ -192,7 +192,7 @@ public class BetterBlueSideLeft extends LinearOpMode
                 .build();
 
         poleLineUp9 = robot.trajectoryBuilder(stackIntake8.end(), Math.toRadians(270))
-                .strafeTo(new Vector2d(10, -55),
+                .strafeTo(new Vector2d(9, -55),
                         RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineTo(new Vector2d(12, -8), Math.toRadians(90),

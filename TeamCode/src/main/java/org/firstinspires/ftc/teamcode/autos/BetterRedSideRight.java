@@ -220,7 +220,7 @@ public class BetterRedSideRight extends LinearOpMode
                 .build();
 
         park1X = robot.trajectoryBuilder(stackScore10.end())
-                .strafeTo(new Vector2d(-10, -12),
+                .strafeTo(new Vector2d(-13, -11),
                         RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {

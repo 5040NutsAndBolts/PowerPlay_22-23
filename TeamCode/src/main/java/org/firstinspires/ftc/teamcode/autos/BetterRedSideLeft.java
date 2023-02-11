@@ -113,7 +113,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         stackIntake3 = robot.trajectoryBuilder(lineUp2.end())
-                .lineTo(new Vector2d(-11, 63))
+                .lineTo(new Vector2d(-11, 62))
                 .addDisplacementMarker(() -> {
                     robot.intakeCone();
                     counterSpin = true;
@@ -173,7 +173,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .splineToSplineHeading(new Pose2d(-12, 40, Math.toRadians(90)), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineToSplineHeading(new Pose2d(-10.5, 61, Math.toRadians(90)), Math.toRadians(90),
+                .splineToSplineHeading(new Pose2d(-10, 61, Math.toRadians(90)), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -183,7 +183,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         stackIntake8 = robot.trajectoryBuilder(lineUp7.end())
-                .lineTo(new Vector2d(-10.5, 63))
+                .lineTo(new Vector2d(-10, 62))
                 .addDisplacementMarker(() -> {
                     robot.intakeCone();
                     counterSpin = true;
@@ -193,7 +193,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         poleLineUp9 = robot.trajectoryBuilder(stackIntake8.end(), Math.toRadians(90))
-                .strafeTo(new Vector2d(-11, 55),
+                .strafeTo(new Vector2d(-10, 55),
                         RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineTo(new Vector2d(-12, 8), Math.toRadians(270),
