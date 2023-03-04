@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,13 +25,25 @@ import org.openftc.easyopencv.OpenCvWebcam;
 public class BetterRedSideLeft extends LinearOpMode
 {
     int autoNumber = 1;
+    boolean rbPressed;
 
-    boolean counterSpin, podFailure;
+    boolean counterSpin, podFailure, nearLine, reset;
+    public double correctedX;
 
-    Trajectory preloadGoal0, backAway1, lineUp2, stackIntake3, poleLineUp4, stackScore5, backAway6, lineUp7, stackIntake8, poleLineUp9, stackScore10, park1X, park2X, park3X;
+    Trajectory preloadGoal0, park1_1, park2_1, park3_1, backAway1, lineUp2, stackIntake3, poleLineUp4,
+            stackScore5, backAway6, lineUp7, stackIntake8, poleLineUp9, stackScore10, park1_X, park2_X, park3_X;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
+
+    enum config
+    {
+        preload,
+        oneCycle,
+        twoCycle
+    }
+
+    config toRun = config.twoCycle;
 
     @Override
     public void runOpMode()
@@ -57,7 +70,6 @@ public class BetterRedSideLeft extends LinearOpMode
 
         RoadRunner robot = new RoadRunner(hardwareMap);
 
-
         ElapsedTime matchTime = new ElapsedTime();
 
         Pose2d startPose = new Pose2d(-64, 30);
@@ -73,7 +85,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 3;
                 })
-                .splineTo(new Vector2d(-27, 4), Math.toRadians(315),
+                .splineTo(new Vector2d(-26, 4), Math.toRadians(310),
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -81,13 +93,38 @@ public class BetterRedSideLeft extends LinearOpMode
                     robot.depositCone();
                 })
                 .addDisplacementMarker(() -> {
-                    robot.followTrajectoryAsync(backAway1);
+                    if(toRun == config.preload)
+                        robot.followTrajectoryAsync(park3_1);
+                    else
+                        robot.followTrajectoryAsync(backAway1);
                 })
                 .build();
 
+        park3_1 = robot.trajectoryBuilder(preloadGoal0.end())
+                .strafeTo(new Vector2d(-36, 13),
+                        RoadRunner.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> {
+                    robot.transferLevel = 0;
+                    if(autoNumber == 2)
+                        robot.followTrajectoryAsync(park2_1);
+                    else if(autoNumber == 1)
+                        robot.followTrajectoryAsync(park1_1);
+                })
+                .build();
+
+        park2_1 = robot.trajectoryBuilder(park3_1.end())
+                .strafeTo(new Vector2d(-36, 35))
+                .build();
+
+        park1_1 = robot.trajectoryBuilder(park3_1.end())
+                .strafeTo(new Vector2d(-36, 60))
+                .build();
+
+
         backAway1 = robot.trajectoryBuilder(preloadGoal0.end())
-                .strafeTo(new Vector2d(-36, 15),
-                        RoadRunner.getVelocityConstraint(25, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .strafeTo(new Vector2d(-35, 12),
+                        RoadRunner.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 0;
@@ -96,24 +133,29 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         lineUp2 = robot.trajectoryBuilder(backAway1.end())
-                .splineTo(new Vector2d(-31, 13), 0,
+                .splineTo(new Vector2d(-30, 11), 0,
                         RoadRunner.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 1;
                 })
-                .splineToSplineHeading(new Pose2d(-11, 61, Math.toRadians(90)), Math.toRadians(90),
+                .splineToSplineHeading(new Pose2d(-11, 40, Math.toRadians(90)), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .splineToSplineHeading(new Pose2d(-10.75, 60, Math.toRadians(90)), Math.toRadians(90),
+                        RoadRunner.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    robot.transferLevel = 0;
+                    robot.transferLevel = 1;
                     counterSpin = false;
                     robot.followTrajectoryAsync(stackIntake3);
                 })
                 .build();
 
         stackIntake3 = robot.trajectoryBuilder(lineUp2.end())
-                .lineTo(new Vector2d(-11, 62))
+                .lineTo(new Vector2d(-10.75, 62.5),
+                        RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.intakeCone();
                     counterSpin = true;
@@ -123,7 +165,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         poleLineUp4 = robot.trajectoryBuilder(stackIntake3.end(), Math.toRadians(90))
-                .lineTo(new Vector2d(-11, 55),
+                .lineTo(new Vector2d(-10.75, 55),
                         RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineTo(new Vector2d(-12, 8), Math.toRadians(270),
@@ -146,8 +188,10 @@ public class BetterRedSideLeft extends LinearOpMode
                     robot.depositCone();
                 })
                 .addDisplacementMarker(() -> {
-                    robot.followTrajectoryAsync(backAway6);
-
+                    if(toRun == config.oneCycle)
+                        robot.followTrajectoryAsync(park3_X);
+                    else
+                        robot.followTrajectoryAsync(backAway6);
                 })
                 .build();
 
@@ -173,7 +217,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .splineToSplineHeading(new Pose2d(-12, 40, Math.toRadians(90)), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .splineToSplineHeading(new Pose2d(-10, 61, Math.toRadians(90)), Math.toRadians(90),
+                .splineToSplineHeading(new Pose2d(-11, 60, Math.toRadians(90)), Math.toRadians(90),
                         RoadRunner.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
@@ -183,7 +227,9 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         stackIntake8 = robot.trajectoryBuilder(lineUp7.end())
-                .lineTo(new Vector2d(-10, 62))
+                .lineTo(new Vector2d(-11, 62.7),
+                        RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.intakeCone();
                     counterSpin = true;
@@ -193,7 +239,7 @@ public class BetterRedSideLeft extends LinearOpMode
                 .build();
 
         poleLineUp9 = robot.trajectoryBuilder(stackIntake8.end(), Math.toRadians(90))
-                .strafeTo(new Vector2d(-10, 55),
+                .strafeTo(new Vector2d(-11, 55),
                         RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineTo(new Vector2d(-12, 8), Math.toRadians(270),
@@ -216,31 +262,29 @@ public class BetterRedSideLeft extends LinearOpMode
                     robot.depositCone();
                 })
                 .addDisplacementMarker(() -> {
-                    robot.followTrajectoryAsync(park3X);
+                    robot.followTrajectoryAsync(park3_X);
                 })
                 .build();
 
-        park3X = robot.trajectoryBuilder(stackScore10.end())
-                .strafeTo(new Vector2d(-10, 12),
+        park3_X = robot.trajectoryBuilder(stackScore10.end())
+                .strafeTo(new Vector2d(-13, 10),
                         RoadRunner.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         RoadRunner.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     robot.transferLevel = 0;
-                    if(autoNumber != 3)
-                        robot.followTrajectoryAsync(park2X);
+                    if(autoNumber == 2)
+                        robot.followTrajectoryAsync(park2_X);
+                    else if(autoNumber == 1)
+                        robot.followTrajectoryAsync(park1_X);
                 })
                 .build();
 
-        park2X = robot.trajectoryBuilder(park3X.end())
-                .strafeTo(new Vector2d(-11, 36))
-                .addDisplacementMarker(() -> {
-                    if(autoNumber == 1)
-                        robot.followTrajectoryAsync(park1X);
-                })
+        park2_X = robot.trajectoryBuilder(park3_X.end())
+                .strafeTo(new Vector2d(-12, 35))
                 .build();
 
-        park1X = robot.trajectoryBuilder(park2X.end())
-                .strafeTo(new Vector2d(-10, 60))
+        park1_X = robot.trajectoryBuilder(park3_X.end())
+                .strafeTo(new Vector2d(-14, 57))
                 .build();
 
         //runs camera and associated programs
@@ -261,10 +305,26 @@ public class BetterRedSideLeft extends LinearOpMode
             else
                 autoNumber = 1;
 
+            if(gamepad1.right_bumper && !rbPressed)
+            {
+                if(toRun == config.twoCycle)
+                    toRun = config.preload;
+                else if(toRun == config.preload)
+                    toRun = config.oneCycle;
+                else
+                    toRun = config.twoCycle;
+
+                rbPressed = true;
+            }
+            else if(!gamepad1.right_bumper)
+                rbPressed = false;
+
             dashboardTelemetry.addData("auto", autoNumber);
+            dashboardTelemetry.addData("running", toRun);
             dashboardTelemetry.update();
 
             telemetry.addData("auto", autoNumber);
+            telemetry.addData("running", toRun);
             telemetry.update();
         }
 
@@ -284,6 +344,15 @@ public class BetterRedSideLeft extends LinearOpMode
             podFailure = robot.failSafe(matchTime);
             if(podFailure)
                 requestOpModeStop();
+
+            /*if(nearLine)
+            {
+                if(correctedX != 12)
+                {
+                    correctedX = robot.findRed(reset, robot.getPoseEstimate().getX());
+                    reset = false;
+                }
+            }*/
 
             dashboardTelemetry.addData("Match time", matchTime);
             dashboardTelemetry.addData("counterspin?", counterSpin);

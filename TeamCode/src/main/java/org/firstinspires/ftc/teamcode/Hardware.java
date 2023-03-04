@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,9 +43,12 @@ public class Hardware extends MecanumDrive
 
     public DigitalChannel limitSwitch;
 
+    //public ColorSensor leftLineSensor, rightLineSensor;
+
     //tracking variables
     public int transferLevel = 0;
     public boolean transferOverride = true;
+    public boolean leftRed, rightRed;
 
     //helper class variables
     public double x = 0, y = 0, theta = 0;
@@ -105,6 +109,9 @@ public class Hardware extends MecanumDrive
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         limitSwitch = hardwareMap.get(DigitalChannel.class, "Limit Switch");
+
+        //leftLineSensor = hardwareMap.colorSensor.get("Left Line Sensor");
+        //rightLineSensor = hardwareMap.colorSensor.get("Right Line Sensor");
 
         //odom
         leftOdom = hardwareMap.get(DcMotorEx.class, "Front Left");
@@ -314,6 +321,11 @@ public class Hardware extends MecanumDrive
             {
                 return true;
             }
+            /*if(Math.abs(centerReadings[0] - centerReadings[1]) < 50 &&
+                    Math.abs(centerReadings[1] - centerReadings[2]) < 50)
+            {
+                return true;
+            }*/
 
             ready = false;
             set = false;
@@ -321,6 +333,40 @@ public class Hardware extends MecanumDrive
 
         return false;
     }
+
+    /*public double findRed(boolean reset, double rawX)
+    {
+        double correctedX = 12;
+
+        if(reset)
+        {
+            leftRed = false;
+            rightRed = false;
+        }
+
+        if(rightLineSensor.red() >= 80)
+        {
+            correctedX = 11.5;
+            rightRed = true;
+        }
+
+        if(leftLineSensor.red() >= 80)
+        {
+            correctedX = 13.5;
+            leftRed = true;
+        }
+
+        if(rightLineSensor.red() > 70 && leftLineSensor.red() > 70)
+        {
+            correctedX = 12;
+            return correctedX;
+        }
+
+        if(leftRed || rightRed)
+            return correctedX;
+        else
+            return rawX;
+    }*/
 
     //all methods below this have to be here to avoid errors and should be ignored
     @Override
