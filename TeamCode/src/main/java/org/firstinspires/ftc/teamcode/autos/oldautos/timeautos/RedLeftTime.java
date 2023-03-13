@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autos.oldautos.timeautos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,6 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 //correct
+@Disabled
 @Autonomous (name = "Red Left Time", group = "Autonomous")
 public class RedLeftTime extends LinearOpMode
 {
@@ -90,6 +92,7 @@ public class RedLeftTime extends LinearOpMode
                 //pushes cone into terminal
                 while(timer.seconds() < 2 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
+
                 //goes to park
                 while (timer.seconds() < 3.5 && opModeIsActive())
                     robot.robotODrive(.5,0,.1);
@@ -102,11 +105,14 @@ public class RedLeftTime extends LinearOpMode
                 while (timer.seconds() < 2 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
                 //returns back to starting position
-                while (timer.seconds() < 3.5 && opModeIsActive())
+                while (timer.seconds() < 3.25 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
+                //returns back to starting position
+                while (timer.seconds() < 4.0 && opModeIsActive())
+                    robot.robotODrive(-0.5,0,0);
 
-                while (timer.seconds() < 4.5 && opModeIsActive())
-                    robot.robotODrive(.5,0,-.075);
+                while (timer.seconds() < 5.5 && opModeIsActive())
+                    robot.robotODrive(.5,0,0);
             }
 
             //purple signal image, right park zone
@@ -117,9 +123,12 @@ public class RedLeftTime extends LinearOpMode
                 //lines up to park
                 while (timer.seconds() < 5 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
+                //lines up to park
+                while (timer.seconds() < 5.5 && opModeIsActive())
+                    robot.robotODrive(-0.5,0,0);
                 //goes to park
-                while (timer.seconds() < 6.25 && opModeIsActive())
-                    robot.robotODrive(.5,0,-0.05);
+                while (timer.seconds() < 6.75 && opModeIsActive())
+                    robot.robotODrive(.5,0,0);
             }
 
             robot.robotODrive(0,0,0);

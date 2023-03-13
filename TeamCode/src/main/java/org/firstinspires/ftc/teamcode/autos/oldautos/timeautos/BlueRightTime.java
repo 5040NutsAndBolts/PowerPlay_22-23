@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autos.oldautos.timeautos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,6 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 //correct
+@Disabled
 @Autonomous (name = "Blue Right Time", group = "Autonomous")
 public class BlueRightTime extends LinearOpMode
 {
@@ -90,10 +92,13 @@ public class BlueRightTime extends LinearOpMode
                 while(timer.seconds() < 2 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
                 //lines up to park
-                while (timer.seconds() < 5 && opModeIsActive())
+                while (timer.seconds() < 4.8 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
+                //lines up to park
+                while (timer.seconds() < 5.25 && opModeIsActive())
+                    robot.robotODrive(-.5,0,0);
                 //goes to park
-                while (timer.seconds() < 6.25 && opModeIsActive())
+                while (timer.seconds() < 6.45 && opModeIsActive())
                     robot.robotODrive(.5,0,0);
             }
 
@@ -104,10 +109,10 @@ public class BlueRightTime extends LinearOpMode
                 while (timer.seconds() < 2 && opModeIsActive())
                     robot.robotODrive(0,-.5,0);
                 //returns back to starting position
-                while (timer.seconds() < 3.5 && opModeIsActive())
+                while (timer.seconds() < 3.25 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
 
-                while (timer.seconds() < 5 && opModeIsActive())
+                while (timer.seconds() < 4.45 && opModeIsActive())
                     robot.robotODrive(.5,0,0);
             }
 
