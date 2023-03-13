@@ -56,7 +56,7 @@ public class PurpleFinder extends OpenCvPipeline
 
         //controls the color range the camera is looking for in the hsv color space
         //the hue value is scaled by .5, the saturation and value are scaled by 2.55
-        Core.inRange(workingMat,new Scalar(120,60,60),new Scalar(165,255,255),workingMat);
+        Core.inRange(workingMat,new Scalar(125,60,50),new Scalar(165,255,255),workingMat);
 
         // Creates a list for all contoured objects the camera will find
         List<MatOfPoint> contoursList = new ArrayList<>();

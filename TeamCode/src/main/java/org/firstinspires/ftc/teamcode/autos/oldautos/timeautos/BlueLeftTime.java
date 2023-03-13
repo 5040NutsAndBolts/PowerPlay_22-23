@@ -16,7 +16,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 //correct
-@Autonomous (name = "Blue Left Time", group = "Autonomous")
+@Autonomous (name = "Time Auto", group = "Autonomous")
 public class BlueLeftTime extends LinearOpMode
 {
     int autoNumber = 1;
@@ -88,12 +88,11 @@ public class BlueLeftTime extends LinearOpMode
             if(autoNumber == 1)
             {
                 //lines up to park
-                while(timer.seconds() < 2 && opModeIsActive())
+                while(timer.seconds() < 1.5 && opModeIsActive())
                     robot.robotODrive(0,.5,0);
                 //parks
                 while (timer.seconds() < 3.5 && opModeIsActive())
                     robot.robotODrive(0.5,0,0);
-
             }
 
             //green signal image, middle park zone
@@ -105,7 +104,6 @@ public class BlueLeftTime extends LinearOpMode
                 //parks
                 while (timer.seconds() < 2 && opModeIsActive())
                     robot.robotODrive(0.5,0,0);
-
             }
 
             //purple signal image, right park zone
@@ -117,7 +115,6 @@ public class BlueLeftTime extends LinearOpMode
                 //parks
                 while (timer.seconds() < 2.75 && opModeIsActive())
                     robot.robotODrive(.5,0,0);
-
             }
 
             robot.robotODrive(0,0,0);
